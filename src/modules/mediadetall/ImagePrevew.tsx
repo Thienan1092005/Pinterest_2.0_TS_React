@@ -1,5 +1,5 @@
 import { useImageContext } from "@/hooks/useImageContext";
-import { Image } from "@nextui-org/react";
+import { Button, Image } from "@nextui-org/react";
 import { Navigate } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import style from "./style.module.css";
@@ -26,22 +26,27 @@ export default function ImagePrevew() {
             <div
               key={image.id}
               className={cn(
-                "h-full !rounded-l-[25px] !rounded-r-none overflow-hidden",
+                "h-full !rounded-l-[25px] !relative !rounded-r-none overflow-hidden",
                 style.embla__slide
               )}
             >
-              <Image
-                loading="lazy"
-                classNames={{
-                  wrapper: " w-full !max-w-full mx-auto ",
-                }}
-                className={cn(
-                  " !w-full rounded-none !h-full max-h-[80vh] object-fill",
-                  style.embla__slide__number
-                )}
-                src={image.url}
-                alt={image.img_name}
-              />
+              <div className="relative w-full mx-auto">
+                <Image
+                  loading="lazy"
+                  classNames={{
+                    wrapper: "!w-full !max-w-full mx-auto",
+                  }}
+                  className={cn(
+                    "!w-full rounded-none !h-full max-h-[80vh] object-cover ",
+                    style.embla__slide__number
+                  )}
+                  src={image.url}
+                  alt={image.img_name}
+                />
+                <Button className=" z-50 absolute bottom-5 left-10">
+                  fjsdalfjasdklfj
+                </Button>
+              </div>
             </div>
           ))}
         </div>
