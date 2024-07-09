@@ -5,6 +5,7 @@ import {
   GetCommentsByIdItemtype,
   MediaDetailResponseType,
   MediaListResponse,
+  SavedImageApiResponseType,
 } from "./interfaces";
 
 export const getListImagesApi = async (
@@ -70,6 +71,23 @@ export const getCommentsByIdApi = async (
       },
     });
     return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const getSavedImageApi = async (
+  token: string
+): Promise<SavedImageApiResponseType[]> => {
+  try {
+    const { data } = await baseApi({
+      method: "GET",
+      url: "media/get-saved-medias",
+      headers: {
+        accessToken: token,
+      },
+    });
+    return data.data;
   } catch (error) {
     console.log(error);
     throw error;

@@ -12,10 +12,17 @@ import AvatarOrName from "@/components/customUi/AvatarOrName";
 import { useImageContext } from "@/hooks/useImageContext";
 import InputCommentBox from "./InputCommentBox";
 import ImageComments from "./ImageComments";
-
+import { useParams } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useEffect, useState } from "react";
+import { getSavedImageApi } from "@/apis/mediaApi";
+import cn from "classnames";
 export default function ImagePost() {
   const { imageData } = useImageContext();
-  if (!imageData) return;
+  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const [imageSaved, setImageSaved] = useState<boolean>(false);
+  const { id } = useParams();
   const { user, name, description } = imageData;
   const listBtn = [
     { item: <TiHeartOutline /> },
@@ -23,6 +30,28 @@ export default function ImagePost() {
     { item: <MdMoreHoriz /> },
   ];
   const { full_name, avatar } = user;
+  useEffect(() => {
+    if (!currentUser) return;
+    const getFollowState = async () => {
+      try {
+        const data = await getSavedImageApi(currentUser.accessToken);
+        if (!id) return;
+        const followImage = data.filter((image) => image.media.id == +id);
+        if (followImage.length < 1) {
+          setImageSaved(false);
+          console.log(followImage);
+          console.log(imageSaved);
+        } else {
+          setImageSaved(!!followImage);
+          console.log(followImage);
+          console.log(imageSaved);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getFollowState();
+  }, [id, currentUser, imageSaved]);
   return (
     <div className=" flex-1 flex flex-col w-full p-5 h-full ">
       <div className="flex justify-between w-full">
@@ -50,7 +79,13 @@ export default function ImagePost() {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <RoundedButton>Lưu</RoundedButton>
+          <RoundedButton
+            className={cn("", {
+              "!bg-black !text-white": imageSaved,
+            })}
+          >
+            {imageSaved ? "Bỏ Lưu" : " Lưu"}
+          </RoundedButton>
         </div>
       </div>
       <div className="  flex-1 max-w-full  overflow-x-hidden overflow-y-auto  ">
@@ -63,7 +98,11 @@ export default function ImagePost() {
             <AvatarOrName size="md" src={avatar} fullName={full_name} />
             <h1>{full_name}</h1>
           </div>
-          <RoundedButton className="!bg-pinter-gray !transition-color duration-300 hover:!text-white hover:!bg-primary-red-color !text-black">
+          <RoundedButton
+            className={cn(
+              "!bg-pinter-gray !transition-color duration-300 hover:!text-white hover:!bg-primary-red-color !text-black"
+            )}
+          >
             Theo dõi
           </RoundedButton>
         </div>

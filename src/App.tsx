@@ -6,10 +6,14 @@ import News from "./modules/news/page/News";
 import CreatePost from "./modules/CreatePost";
 import NotFound from "./modules/notfound/NotFound";
 import MediaContext from "./modules/mediadetall/MediaContext";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <>
+      <div>
+        <Toaster position="top-right" />
+      </div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout />}>

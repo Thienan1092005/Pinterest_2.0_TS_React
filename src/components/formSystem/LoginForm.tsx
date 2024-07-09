@@ -3,8 +3,10 @@ import CustomInput from "../customUi/CustomInput";
 import { Button } from "@nextui-org/react";
 import RoundedButton from "../customUi/RoundedButton";
 import { useForm } from "react-hook-form";
-import { userLognApi } from "@/apis/authApi";
-
+import { useDispatch } from "react-redux";
+import { handleLoginThunk } from "@/redux/slices/authSlice";
+import { AppDispatch } from "@/redux/store";
+import toast from "react-hot-toast";
 interface IPoprs {
   onclose?: () => void;
 }
@@ -13,6 +15,7 @@ interface IFormValues {
   password: string;
 }
 export default function LoginForm({ onclose }: IPoprs) {
+  const dispatch = useDispatch<AppDispatch>();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
@@ -21,10 +24,12 @@ export default function LoginForm({ onclose }: IPoprs) {
   });
   const handleLogin = async (values: IFormValues) => {
     try {
-      const data = await userLognApi(values);
-      console.log(data.message);
-    } catch (error) {
-      console.log(error);
+      await dispatch(handleLoginThunk(values)).unwrap();
+      toast.success("Login success");
+      onclose && onclose();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error?.message || "Lỗi không xác định");
     }
   };
   return (
@@ -50,9 +55,7 @@ export default function LoginForm({ onclose }: IPoprs) {
         <Button className=" block mb-5  bg-white w-auot h-auto p-0">
           Quên mật khẩu
         </Button>
-        <RoundedButton onClick={onclose} className=" w-full">
-          Đăng nhập
-        </RoundedButton>
+        <RoundedButton className=" w-full">Đăng nhập</RoundedButton>
       </form>
     </div>
   );

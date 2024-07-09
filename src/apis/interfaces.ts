@@ -116,3 +116,45 @@ export interface GetCommentsByIdItemtype {
   media_id: number;
   user: UserType;
 }
+
+export interface SavedImageApiResponseType {
+  id: number;
+  created_at: string;
+  media: ImageResponseType;
+}
+
+interface ImageResponseType {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  type: string;
+  user: User;
+  image: Image[];
+}
+
+interface Image {
+  id: number;
+  img_name: string;
+  url: string;
+  created_at: string;
+}
+
+interface User {
+  id: number;
+  username: string;
+  full_name: string;
+  age: number;
+  avatar: string;
+  user_type: Usertype;
+  created_at: string;
+  updated_at: string;
+  is_ban: number;
+}
+
+interface Usertype {
+  id: number;
+  type_name: string;
+}

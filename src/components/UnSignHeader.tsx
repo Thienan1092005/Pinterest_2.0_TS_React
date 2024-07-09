@@ -20,7 +20,12 @@ export default function UnSignHeader() {
           <FaPinterest className="text-[24px] text-primary-red-color mr-1" />
           <h1 className="text-primary-red-color font-sf-bold  ">Yukiterest</h1>
         </div>
-        <div className="p-2 rounded-[8px] cursor-pointer font-[600] hover:bg-gray-300 transition-all duration-500 ">
+        <div
+          onClick={() => {
+            navigate("/news");
+          }}
+          className="p-2 rounded-[8px] cursor-pointer font-[600] hover:bg-gray-300 transition-all duration-500 "
+        >
           Khám Phá
         </div>
       </div>

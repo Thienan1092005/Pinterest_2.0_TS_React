@@ -5,6 +5,14 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import RoundedButton from "./customUi/RoundedButton";
 import { AiFillMessage } from "react-icons/ai";
 import { GoChevronUp } from "react-icons/go";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/slices/authSlice";
 
 const navItems = [
   { name: "Trang chủ", to: "/news" },
@@ -22,9 +30,9 @@ const listBtn = [
       />
     ),
   },
-  { icon: <GoChevronUp className=" rotate-180" /> },
 ];
 export default function SignedHeader() {
+  const dispatch = useDispatch();
   return (
     <div className=" px-[16px] py-[4px] z-20 h-[80px] fixed font-sf-bold  flex w-full bg-white justify-between text-[16px] items-center">
       {/* header left */}
@@ -64,6 +72,29 @@ export default function SignedHeader() {
             {icon}
           </RoundedButton>
         ))}
+
+        <Dropdown>
+          <DropdownTrigger>
+            <button className="hover:bg-pinter-gray grid place-items-center !duration-500 text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
+              <GoChevronUp className=" rotate-[180deg]" />
+            </button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Static Actions">
+            <DropdownItem key="new">New file</DropdownItem>
+            <DropdownItem key="copy">Copy link</DropdownItem>
+            <DropdownItem key="edit">Edit file</DropdownItem>
+            <DropdownItem
+              onClick={() => {
+                dispatch(logout());
+              }}
+              key="delete"
+              className="text-danger"
+              color="danger"
+            >
+              Delete file
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     </div>
   );
