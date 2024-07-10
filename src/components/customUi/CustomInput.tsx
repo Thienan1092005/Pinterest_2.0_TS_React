@@ -19,7 +19,7 @@ export default function CustomInput({
         {lableName}
       </label>
       <input
-        placeholder="email or username"
+        placeholder={lableName}
         className="focus:border-[2px] px-2 h-[50px] border-ocren-blue outline-none w-full rounded-3xl border-pinter-gray-300  border-[2px] border-black/20"
         type="text"
         {...props}

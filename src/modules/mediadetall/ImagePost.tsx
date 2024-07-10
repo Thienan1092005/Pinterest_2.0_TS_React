@@ -16,56 +16,64 @@ import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
-import { getSavedImageApi } from "@/apis/mediaApi";
+import { getSavedImageApi, savedImageApi } from "@/apis/mediaApi";
 import cn from "classnames";
+
 export default function ImagePost() {
   const { imageData } = useImageContext();
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const [imageSaved, setImageSaved] = useState<boolean>(false);
   const { id } = useParams();
-  const { user, name, description } = imageData;
+
   const listBtn = [
     { item: <TiHeartOutline /> },
     { item: <MdOutlineFileUpload /> },
     { item: <MdMoreHoriz /> },
   ];
-  const { full_name, avatar } = user;
+
+  const handleFollow = async () => {
+    try {
+      if (!id) return;
+      await savedImageApi(+id, currentUser?.accessToken);
+      setImageSaved((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !id) return;
     const getFollowState = async () => {
       try {
         const data = await getSavedImageApi(currentUser.accessToken);
-        if (!id) return;
-        const followImage = data.filter((image) => image.media.id == +id);
-        if (followImage.length < 1) {
-          setImageSaved(false);
-          console.log(followImage);
-          console.log(imageSaved);
-        } else {
-          setImageSaved(!!followImage);
-          console.log(followImage);
-          console.log(imageSaved);
-        }
+        const followImage = data.filter((image) => image.media.id === +id);
+        setImageSaved(followImage.length > 0);
       } catch (error) {
         console.log(error);
       }
     };
     getFollowState();
-  }, [id, currentUser, imageSaved]);
+  }, [id, currentUser]);
+
+  if (!imageData) return null;
+
+  const { user, name, description } = imageData;
+  const { full_name, avatar } = user;
+
   return (
-    <div className=" flex-1 flex flex-col w-full p-5 h-full ">
+    <div className="flex-1 flex flex-col w-full p-5 h-full">
       <div className="flex justify-between w-full">
-        <div className=" flex">
+        <div className="flex">
           {listBtn.map((item, i) => (
             <button
               key={i}
-              className=" flex transition-all duration-500 justify-center items-center text-[20px]  rounded-full bg-white hover:bg-gray-300 w-12 h-12 "
+              className="flex transition-all duration-500 justify-center items-center text-[20px] rounded-full bg-white hover:bg-gray-300 w-12 h-12"
             >
               {item.item}
             </button>
           ))}
         </div>
-        <div className=" flex gap-x-5 items-center ">
+        <div className="flex gap-x-5 items-center">
           <Dropdown>
             <DropdownTrigger>
               <Button>Hồ sơ</Button>
@@ -80,21 +88,22 @@ export default function ImagePost() {
             </DropdownMenu>
           </Dropdown>
           <RoundedButton
+            onClick={handleFollow}
             className={cn("", {
               "!bg-black !text-white": imageSaved,
             })}
           >
-            {imageSaved ? "Bỏ Lưu" : " Lưu"}
+            {imageSaved ? "Bỏ Lưu" : "Lưu"}
           </RoundedButton>
         </div>
       </div>
-      <div className="  flex-1 max-w-full  overflow-x-hidden overflow-y-auto  ">
-        <h1 className=" my-[15px] text-[30px] font-sf-bold ">{name}</h1>
-        <p className=" mb-5 max-w-[90%] font-sf-regular text-[16px]">
+      <div className="flex-1 max-w-full overflow-x-hidden overflow-y-auto">
+        <h1 className="my-[15px] text-[30px] font-sf-bold">{name}</h1>
+        <p className="mb-5 max-w-[90%] font-sf-regular text-[16px]">
           {description}
         </p>
-        <div className=" flex justify-between w-full ">
-          <div className=" flex gap-x-4 items-center font-sf-regular ">
+        <div className="flex justify-between w-full">
+          <div className="flex gap-x-4 items-center font-sf-regular">
             <AvatarOrName size="md" src={avatar} fullName={full_name} />
             <h1>{full_name}</h1>
           </div>
@@ -108,7 +117,6 @@ export default function ImagePost() {
         </div>
         <ImageComments />
       </div>
-      {/* comments input  */}
       <InputCommentBox />
     </div>
   );

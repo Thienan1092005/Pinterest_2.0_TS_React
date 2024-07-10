@@ -93,3 +93,22 @@ export const getSavedImageApi = async (
     throw error;
   }
 };
+
+export const savedImageApi = async (
+  id: number | undefined,
+  token: string | undefined
+) => {
+  try {
+    await baseApi({
+      method: "POST",
+      url: "media/save-media/" + id,
+      headers: {
+        accessToken: token,
+      },
+    });
+    console.log("saved");
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

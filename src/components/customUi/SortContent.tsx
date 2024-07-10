@@ -18,7 +18,9 @@ export default function SortContent({
   themeColor,
 }: IProps) {
   return (
-    <div className={`  text-center items-center  text-[${themeColor}]  `}>
+    <div
+      className={`  flex flex-col text-center items-center  text-[${themeColor}]  `}
+    >
       <h1
         className={`  font-sf-bold  text-[60px] text-center !max-w-[${lineWhidth}] ${titleColor}`}
       >

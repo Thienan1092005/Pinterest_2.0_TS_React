@@ -3,17 +3,20 @@ import { useImageContext } from "@/hooks/useImageContext";
 import { Input } from "@nextui-org/react";
 import { IoSend } from "react-icons/io5";
 import cn from "classnames";
+import { useSelector } from "react-redux";
+import { selectAuth } from "@/redux/slices/authSlice";
 export default function InputCommentBox() {
   const { imageData } = useImageContext();
+  const { currentUser } = useSelector(selectAuth);
+  if (!currentUser) return;
+  const { avatar, full_name } = currentUser;
   if (!imageData) return;
-  const { user } = imageData;
-  const { full_name, avatar } = user;
   return (
     <div className=" flex mt-[15px] h-fit gap-x-2">
       <AvatarOrName size="md" src={avatar} fullName={full_name} />
       <div className={cn("  relative w-full ")}>
         <Input
-          placeholder="Viết bình luận ...."
+          placeholder={"Viết bình luận với tư cách " + full_name + " ..."}
           className={cn("  w-full h-full ")}
           type="text"
         />

@@ -1,6 +1,6 @@
 import footerbg from "../footerbg.png";
 import { GoChevronUp } from "react-icons/go";
-import LoginForm from "@/components/formSystem/LoginForm";
+import SignupForm from "@/components/formSystem/SignupForm";
 
 export default function Botton() {
   return (
@@ -29,8 +29,8 @@ export default function Botton() {
       >
         <GoChevronUp />
       </button>
-      <div className="w-1/2 flex justify-center items-center z-20 h-full">
-        <LoginForm />
+      <div className="w-1/2 flex  justify-center items-center h-full">
+        <SignupForm />
       </div>
     </div>
   );

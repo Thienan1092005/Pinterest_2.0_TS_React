@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { handleLoginThunk } from "@/redux/slices/authSlice";
 import { AppDispatch } from "@/redux/store";
 import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router";
 interface IPoprs {
   onclose?: () => void;
 }
@@ -16,6 +17,8 @@ interface IFormValues {
 }
 export default function LoginForm({ onclose }: IPoprs) {
   const dispatch = useDispatch<AppDispatch>();
+  const { slug } = useParams();
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: "",
@@ -27,6 +30,7 @@ export default function LoginForm({ onclose }: IPoprs) {
       await dispatch(handleLoginThunk(values)).unwrap();
       toast.success("Login success");
       onclose && onclose();
+      if (!slug) navigate("/news");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error?.message || "Lỗi không xác định");
@@ -36,7 +40,7 @@ export default function LoginForm({ onclose }: IPoprs) {
     <div className="  text-center rounded-3xl py-5 px-[10px]  bg-white">
       <div>
         <FaPinterest className="text-[24px] mb-5 w-full text-primary-red-color mr-1" />
-        <h1 className=" my-5 font-sf-bold text-3xl">
+        <h1 className=" my-5 font-sf-bold text-[32px]">
           Chào mừng bạn đến với Yukiterest
         </h1>
       </div>

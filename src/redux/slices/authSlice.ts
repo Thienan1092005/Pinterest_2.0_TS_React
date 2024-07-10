@@ -1,7 +1,7 @@
 import { ApiResponseType, UserLoginResponeType } from "@/apis/interfaces";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { userLognApi } from "@/apis/authApi";
+import { IUserRegister, userLognApi, userRegisterApi } from "@/apis/authApi";
 import toast from "react-hot-toast";
 
 interface AuthState {
@@ -36,7 +36,18 @@ export const handleLoginThunk = createAsyncThunk(
     }
   }
 );
-
+export const handleRegisterThunk = createAsyncThunk(
+  "authSlice/register",
+  async (value: IUserRegister) => {
+    try {
+      const data = await userRegisterApi(value);
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+);
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -70,6 +81,21 @@ export const authSlice = createSlice({
     });
     builder.addCase(handleLoginThunk.rejected, (state) => {
       return { ...state, isLoading: false };
+    });
+    builder.addCase(handleRegisterThunk.pending, (state) => {
+      return { ...state, isLoading: true };
+    });
+    builder.addCase(handleRegisterThunk.rejected, (state) => {
+      return { ...state, isLoading: false };
+    });
+    builder.addCase(handleRegisterThunk.fulfilled, (state, action) => {
+      localStorage.setItem("currentUser", JSON.stringify(action.payload));
+      return {
+        ...state,
+        isLogin: true,
+        isLoading: false,
+        currentUser: action.payload,
+      };
     });
   },
 });
