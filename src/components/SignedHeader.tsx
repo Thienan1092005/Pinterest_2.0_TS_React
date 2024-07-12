@@ -1,5 +1,5 @@
 import { FaBell, FaPinterest } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import RoundedButton from "./customUi/RoundedButton";
@@ -12,22 +12,37 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
-import { logout } from "@/redux/slices/authSlice";
+import { logout, selectAuth } from "@/redux/slices/authSlice";
+import { TbLogout2 } from "react-icons/tb";
+import { CgProfile } from "react-icons/cg";
+import { useSelector } from "react-redux";
+import AvatarOrName from "./customUi/AvatarOrName";
+import { Fragment } from "react/jsx-runtime";
 
 const navItems = [
   { name: "Trang chủ", to: "/news" },
   { name: "Tạo", to: "/createpost" },
 ];
 const listBtn = [
-  { icon: <FaBell /> },
-  { icon: <AiFillMessage /> },
   {
-    icon: (
-      <img
-        className=" rounded-full"
-        src="https://i.pinimg.com/736x/19/b3/21/19b321a64ef16becca70afbd3310f725.jpg"
-        alt=""
-      />
+    component: (
+      <RoundedButton className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
+        <FaBell />
+      </RoundedButton>
+    ),
+  },
+  {
+    component: (
+      <RoundedButton className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
+        <AiFillMessage />
+      </RoundedButton>
+    ),
+  },
+  {
+    component: (
+      // <RoundedButton className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
+      <ProfileAvatar />
+      // </RoundedButton>
     ),
   },
 ];
@@ -64,13 +79,8 @@ export default function SignedHeader() {
       </div>
       {/* header  right  */}
       <div className="flex justify-around items-center">
-        {listBtn.map(({ icon }) => (
-          <RoundedButton
-            key={new Date().getTime()}
-            className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12"
-          >
-            {icon}
-          </RoundedButton>
+        {listBtn.map(({ component }) => (
+          <Fragment key={new Date().getTime()}>{component}</Fragment>
         ))}
 
         <Dropdown>
@@ -80,22 +90,42 @@ export default function SignedHeader() {
             </button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new">New file</DropdownItem>
-            <DropdownItem key="copy">Copy link</DropdownItem>
-            <DropdownItem key="edit">Edit file</DropdownItem>
+            <DropdownItem key="new">
+              <button className=" flex font-sf-bold items-center gap-x-1  ">
+                <CgProfile />
+                <h1>Profile</h1>
+              </button>
+            </DropdownItem>
+
             <DropdownItem
               onClick={() => {
                 dispatch(logout());
               }}
               key="delete"
-              className="text-danger"
+              className="text-danger "
               color="danger"
             >
-              Delete file
+              <button className=" flex font-sf-bold items-center gap-x-1  ">
+                <TbLogout2 />
+                <h1>Logout</h1>
+              </button>
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
     </div>
+  );
+}
+
+function ProfileAvatar() {
+  const { currentUser } = useSelector(selectAuth);
+  return (
+    <Link to="profile">
+      <AvatarOrName
+        className=" rounded-full "
+        avatarUrl={currentUser?.avatar}
+        fullName={currentUser?.full_name || "Noname"}
+      />
+    </Link>
   );
 }

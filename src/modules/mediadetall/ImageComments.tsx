@@ -1,36 +1,12 @@
-import { GetCommentsByIdItemtype } from "@/apis/interfaces";
-import { getCommentsByIdApi } from "@/apis/mediaApi";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
 import CommentItem from "./CommentItem";
+import { useCommentContext } from "@/hooks/useCommentContext";
 
 export default function ImageComments() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [commentList, setCommentList] = useState<
-    GetCommentsByIdItemtype[] | null
-  >(null);
-  const { id } = useParams();
-
-  useEffect(() => {
-    const getImageComments = async () => {
-      try {
-        setIsLoading(true);
-        if (!id) return;
-        const { data } = await getCommentsByIdApi(+id);
-        const commentNotReply = data.items.filter(
-          (comment) => !comment.reply_to
-        );
-        setCommentList(commentNotReply);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getImageComments();
-  }, [id]);
-
+  const { commentList, isLoading } = useCommentContext();
+  const notReplyComment = commentList?.filter((comment) => {
+    return !comment.reply_to;
+  });
   return (
     <>
       {isLoading ? (
@@ -42,7 +18,7 @@ export default function ImageComments() {
           ) : (
             <>
               <h1 className=" mb-5 font-sf-bold ">{" Tất cả  nhận xét"}</h1>
-              {commentList?.map((comment) => (
+              {notReplyComment?.map((comment) => (
                 <CommentItem comment={comment} key={comment.id} />
               ))}
             </>
@@ -52,6 +28,7 @@ export default function ImageComments() {
     </>
   );
 }
+
 const EmptyCommnet = () => {
   return (
     <>

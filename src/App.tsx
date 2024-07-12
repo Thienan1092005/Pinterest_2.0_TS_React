@@ -7,6 +7,8 @@ import CreatePost from "./modules/CreatePost";
 import NotFound from "./modules/notfound/NotFound";
 import MediaContext from "./modules/mediadetall/MediaContext";
 import { Toaster } from "react-hot-toast";
+import CheckIsLogin from "./components/CheckIsLogin";
+import AccoutDetall from "./modules/accoutdetall/AccoutDetall";
 export default function App() {
   return (
     <>
@@ -46,6 +48,16 @@ export default function App() {
                 <ContentLayout>
                   <MediaContext />
                 </ContentLayout>
+              }
+            />
+            <Route
+              path="/profile/"
+              element={
+                <CheckIsLogin>
+                  <ContentLayout>
+                    <AccoutDetall />
+                  </ContentLayout>
+                </CheckIsLogin>
               }
             />
             <Route

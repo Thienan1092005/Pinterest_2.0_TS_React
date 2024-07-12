@@ -17,7 +17,7 @@ export const getListImagesApi = async (
       method: "GET",
       url: "media/get-media-list",
       params: {
-        limit: limit || 10,
+        limit: limit || 30,
         page: page || 1,
       },
     });
@@ -55,7 +55,7 @@ export const getImageDetailById = async (
   }
 };
 
-export const getCommentsByIdApi = async (
+export const getCommentsByImageIdApi = async (
   id: number,
   optionals?: { page?: number; replyTo?: number }
 ): Promise<
@@ -77,7 +77,8 @@ export const getCommentsByIdApi = async (
   }
 };
 export const getSavedImageApi = async (
-  token: string
+  token: string,
+  id?: number
 ): Promise<SavedImageApiResponseType[]> => {
   try {
     const { data } = await baseApi({
@@ -85,6 +86,9 @@ export const getSavedImageApi = async (
       url: "media/get-saved-medias",
       headers: {
         accessToken: token,
+      },
+      params: {
+        id,
       },
     });
     return data.data;
@@ -107,6 +111,47 @@ export const savedImageApi = async (
       },
     });
     console.log("saved");
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const createCommentApi = async (
+  token: string,
+  id: number,
+  content: string,
+  replyToCommentId?: number
+) => {
+  try {
+    await baseApi({
+      method: "POST",
+      url: "media/create-comment/" + id,
+      headers: {
+        accessToken: token,
+      },
+      data: {
+        content,
+        replyToCommentId,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const handleDeleteCommentApi = async (
+  CommentId: number,
+  accessToken: string
+) => {
+  try {
+    await baseApi({
+      method: "DELETE",
+      url: "media/remove-comment/" + CommentId,
+      headers: {
+        accessToken,
+      },
+    });
   } catch (error) {
     console.log(error);
     throw error;
