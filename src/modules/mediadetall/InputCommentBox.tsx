@@ -1,60 +1,57 @@
 import AvatarOrName from "@/components/customUi/AvatarOrName";
-import { useImageContext } from "@/hooks/useImageContext";
 import { Input } from "@nextui-org/react";
 import { IoCloseCircleSharp, IoSend } from "react-icons/io5";
 import cn from "classnames";
 import { useSelector } from "react-redux";
 import { selectAuth } from "@/redux/slices/authSlice";
 import { MdEmojiEmotions } from "react-icons/md";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { createCommentApi } from "@/apis/mediaApi";
 import { useCommentContext } from "@/hooks/useCommentContext";
-
 export default function InputCommentBox() {
-  const { imageData } = useImageContext();
   const { id } = useParams();
   const { toggleReFetch, replyTarget, setReplyTarget } = useCommentContext();
   const { currentUser } = useSelector(selectAuth);
   const [commentContent, setCommentContent] = useState<string>("");
-
-  if (!currentUser) return;
-  const { avatar, full_name, accessToken } = currentUser;
-
-  if (!imageData) return;
-
+  const inputCommentRef = useRef<HTMLInputElement>(null);
   const handleComment = async (e: FormEvent) => {
     e.preventDefault();
     if (!id || commentContent == "") return;
     if (replyTarget) {
-      await createCommentApi(
-        accessToken,
-        +id,
-        commentContent,
-        replyTarget.userTargetId
-      );
+      await createCommentApi(+id, commentContent, replyTarget.userTargetId);
       setCommentContent("");
       setReplyTarget(undefined);
       toggleReFetch();
     } else {
-      await createCommentApi(accessToken, +id, commentContent);
+      await createCommentApi(+id, commentContent);
       setCommentContent("");
       toggleReFetch();
     }
   };
+  useEffect(() => {
+    if (replyTarget) inputCommentRef.current?.focus();
+  }, [replyTarget]);
 
   return (
     <div className=" flex mt-[15px] relative h-fit gap-x-2">
-      <AvatarOrName size="md" src={avatar} fullName={full_name} />
+      <AvatarOrName
+        size="md"
+        src={currentUser?.avatar}
+        fullName={currentUser?.full_name}
+      />
       <div className={cn("  relative w-full ")}>
         <form onSubmit={handleComment}>
           <Input
+            ref={inputCommentRef}
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
             placeholder={
               replyTarget
                 ? "đang trả lời" + " " + replyTarget.userTargetName
-                : "Viết bình luận với tư cách " + full_name + " ..."
+                : "Viết bình luận với tư cách " +
+                  currentUser?.full_name +
+                  " ..."
             }
             className={cn("  w-full h-full ")}
             type="text"

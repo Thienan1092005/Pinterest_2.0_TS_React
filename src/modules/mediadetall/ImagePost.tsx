@@ -15,20 +15,23 @@ import AvatarOrName from "@/components/customUi/AvatarOrName";
 import { useImageContext } from "@/hooks/useImageContext";
 import InputCommentBox from "./InputCommentBox";
 import ImageComments from "./ImageComments";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
-import { getSavedImageApi, savedImageApi } from "@/apis/mediaApi";
+import { getSavedImageApi, RemovePost, savedImageApi } from "@/apis/mediaApi";
 import cn from "classnames";
 import LoginForm from "@/components/formSystem/LoginForm";
+import { useToggle } from "@smojs/react-hooks";
+import LoadingSpinner from "@/components/LoadingSpinner";
 export default function ImagePost() {
   const { imageData } = useImageContext();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const [imageSaved, setImageSaved] = useState<boolean>(false);
+  const [isSaving, toggleSaving] = useToggle(false);
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const listBtn = [
     { item: <TiHeartOutline /> },
     { item: <MdOutlineFileUpload /> },
@@ -36,11 +39,14 @@ export default function ImagePost() {
 
   const handleFollow = async () => {
     try {
+      toggleSaving(true);
       if (!id) return;
       await savedImageApi(+id, currentUser?.accessToken);
       setImageSaved((prev) => !prev);
     } catch (error) {
       console.log(error);
+    } finally {
+      toggleSaving(false);
     }
   };
   useEffect(() => {
@@ -58,8 +64,17 @@ export default function ImagePost() {
 
   if (!imageData) return null;
 
-  const { user, name, description } = imageData;
-  const { full_name, avatar } = user;
+  const { user, name, description, id: imageId } = imageData;
+  const { full_name, avatar, id: creatorId } = user;
+
+  const handleDeleteImg = async () => {
+    try {
+      await RemovePost(+imageId);
+      navigate("/news");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col w-full p-5 h-full">
@@ -73,25 +88,27 @@ export default function ImagePost() {
               {item.item}
             </button>
           ))}
-          <Dropdown>
-            <DropdownTrigger>
-              <button className="flex transition-all duration-500 justify-center items-center text-[20px] rounded-full bg-white hover:bg-gray-300 w-12 h-12">
-                <MdMoreHoriz />
-              </button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem
-                onClick={() => {
-                  console.log(123);
-                }}
-                key="delete"
-                className="text-danger"
-                color="danger"
-              >
-                Delete file
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          {+creatorId == currentUser?.id && (
+            <Dropdown>
+              <DropdownTrigger>
+                <button className="flex transition-all duration-500 justify-center items-center text-[20px] rounded-full bg-white hover:bg-gray-300 w-12 h-12">
+                  <MdMoreHoriz />
+                </button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  onClick={() => {
+                    handleDeleteImg();
+                  }}
+                  key="delete"
+                  className="text-danger"
+                  color="danger"
+                >
+                  Xoá Ghim
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          )}
         </div>
         <div className="flex gap-x-5 items-center">
           <Dropdown>
@@ -113,18 +130,24 @@ export default function ImagePost() {
               className={cn("bg-primary-red-color text-white", {
                 "!bg-black !text-white": imageSaved,
               })}
+              disabled={isSaving}
             >
-              {imageSaved ? "Bỏ Lưu" : "Lưu"}
+              {isSaving ? (
+                <LoadingSpinner color="white" size="sm" />
+              ) : imageSaved ? (
+                "Bỏ Lưu"
+              ) : (
+                "Lưu"
+              )}
             </RoundedButton>
           ) : (
             <Button
               onPress={onOpen}
-              onClick={handleFollow}
               className={cn("bg-primary-red-color   text-white", {
                 "!bg-black !text-white": imageSaved,
               })}
             >
-              {imageSaved ? "Bỏ Lưu" : "Lưu"}
+              Lưu
             </Button>
           )}
         </div>

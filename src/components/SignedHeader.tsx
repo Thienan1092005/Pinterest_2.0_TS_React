@@ -5,19 +5,12 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import RoundedButton from "./customUi/RoundedButton";
 import { AiFillMessage } from "react-icons/ai";
 import { GoChevronUp } from "react-icons/go";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/react";
-import { useDispatch } from "react-redux";
-import { logout, selectAuth } from "@/redux/slices/authSlice";
-import { TbLogout2 } from "react-icons/tb";
-import { CgProfile } from "react-icons/cg";
+import { Dropdown, DropdownTrigger } from "@nextui-org/react";
+import { selectAuth } from "@/redux/slices/authSlice";
 import { useSelector } from "react-redux";
 import AvatarOrName from "./customUi/AvatarOrName";
 import { Fragment } from "react/jsx-runtime";
+import AccoutDropdown from "./customUi/AccoutDropdown";
 
 const navItems = [
   { name: "Trang chủ", to: "/news" },
@@ -39,27 +32,24 @@ const listBtn = [
     ),
   },
   {
-    component: (
-      // <RoundedButton className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
-      <ProfileAvatar />
-      // </RoundedButton>
-    ),
+    component: <ProfileAvatar />,
   },
 ];
 export default function SignedHeader() {
-  const dispatch = useDispatch();
   return (
     <div className=" px-[16px] py-[4px] z-20 h-[80px] fixed font-sf-bold  flex w-full bg-white justify-between text-[16px] items-center">
       {/* header left */}
       <div className="flex justify-around items-center gap-x-2 ">
-        <FaPinterest className="text-[24px] text-primary-red-color mr-1" />
+        <Link to={"/news"}>
+          <FaPinterest className="text-[24px] text-primary-red-color mr-1" />
+        </Link>
         {navItems.map(({ name, to }) => (
           <NavLink
             to={to}
             key={to}
             className={({ isActive }) => {
               return classNames(
-                " px-4 h-[48px] bg-white flex justify-center items-center rounded-[25px]  text-black",
+                " px-4 h-[48px] shrink-[0] bg-white flex justify-center items-center rounded-[25px]  text-black",
                 { "!bg-black !text-white": isActive }
               );
             }}
@@ -89,28 +79,7 @@ export default function SignedHeader() {
               <GoChevronUp className=" rotate-[180deg]" />
             </button>
           </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new">
-              <button className=" flex font-sf-bold items-center gap-x-1  ">
-                <CgProfile />
-                <h1>Profile</h1>
-              </button>
-            </DropdownItem>
-
-            <DropdownItem
-              onClick={() => {
-                dispatch(logout());
-              }}
-              key="delete"
-              className="text-danger "
-              color="danger"
-            >
-              <button className=" flex font-sf-bold items-center gap-x-1  ">
-                <TbLogout2 />
-                <h1>Logout</h1>
-              </button>
-            </DropdownItem>
-          </DropdownMenu>
+          <AccoutDropdown />
         </Dropdown>
       </div>
     </div>

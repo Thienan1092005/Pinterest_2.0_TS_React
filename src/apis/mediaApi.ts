@@ -4,6 +4,7 @@ import {
   ApiResponseType,
   GetCommentsByIdItemtype,
   MediaDetailResponseType,
+  MediaItemType,
   MediaListResponse,
   SavedImageApiResponseType,
 } from "./interfaces";
@@ -28,18 +29,6 @@ export const getListImagesApi = async (
   }
 };
 
-// export const getImageIdBySlug = async (
-//   slug: string | undefined
-// ): Promise<number | undefined> => {
-//   try {
-//     const data = await getListImagesApi();
-//     const foundImage = data.items.find((item) => item.slug === slug);
-//     return foundImage?.id;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// };
 export const getImageDetailById = async (
   id: number | undefined
 ): Promise<MediaDetailResponseType> => {
@@ -77,7 +66,7 @@ export const getCommentsByImageIdApi = async (
   }
 };
 export const getSavedImageApi = async (
-  token: string,
+  token?: string,
   id?: number
 ): Promise<SavedImageApiResponseType[]> => {
   try {
@@ -118,7 +107,6 @@ export const savedImageApi = async (
 };
 
 export const createCommentApi = async (
-  token: string,
   id: number,
   content: string,
   replyToCommentId?: number
@@ -127,9 +115,7 @@ export const createCommentApi = async (
     await baseApi({
       method: "POST",
       url: "media/create-comment/" + id,
-      headers: {
-        accessToken: token,
-      },
+      headers: {},
       data: {
         content,
         replyToCommentId,
@@ -142,7 +128,7 @@ export const createCommentApi = async (
 };
 export const handleDeleteCommentApi = async (
   CommentId: number,
-  accessToken: string
+  accessToken?: string
 ) => {
   try {
     await baseApi({
@@ -152,6 +138,33 @@ export const handleDeleteCommentApi = async (
         accessToken,
       },
     });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const RemovePost = async (id: number) => {
+  try {
+    await baseApi({
+      method: "DELETE",
+      url: "/media/remove-media/" + id,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const createMediaUploadApi = async (
+  formData: FormData
+): Promise<ApiResponseType<MediaItemType>> => {
+  try {
+    const { data } = await baseApi({
+      url: "media/upload",
+      method: "POST",
+      data: formData,
+    });
+    return data;
   } catch (error) {
     console.log(error);
     throw error;

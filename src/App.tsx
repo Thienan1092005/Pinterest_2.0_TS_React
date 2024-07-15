@@ -51,7 +51,7 @@ export default function App() {
               }
             />
             <Route
-              path="/profile/"
+              path="/profile"
               element={
                 <CheckIsLogin>
                   <ContentLayout>
@@ -59,7 +59,7 @@ export default function App() {
                   </ContentLayout>
                 </CheckIsLogin>
               }
-            />
+            ></Route>
             <Route
               path="*"
               element={

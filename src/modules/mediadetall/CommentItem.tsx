@@ -18,6 +18,7 @@ import { useEffect, useId, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { MdMoreHoriz } from "react-icons/md";
+import ReplyCommentItem from "./ReplyCommentItem";
 
 interface IProps {
   comment: GetCommentsByIdItemtype;
@@ -37,7 +38,7 @@ export default function CommentItem({ comment }: IProps) {
 
   const handleDeleteComment = async () => {
     try {
-      await handleDeleteCommentApi(+commentId, accessToken);
+      await handleDeleteCommentApi(+commentId, currentUser?.accessToken || "");
       toggleReFetch();
     } catch (error) {
       console.log(error);
@@ -75,15 +76,14 @@ export default function CommentItem({ comment }: IProps) {
       window.removeEventListener("keydown", handleKeydown);
     };
   }, [replyTarget, setReplyTarget]);
-  if (!currentUser) return;
-  const { id: currentUserIds, accessToken } = currentUser;
+
   return (
     <div className="w-full mb-5">
       <div className="flex gap-x-2">
         <AvatarOrName size="sm" src={avatar} name={full_name} />
         <div>
           <h1 className="font-sf-bold">{full_name}</h1>
-          <p className="font-sf-light">{content}</p>
+          <p className="font-sf-light  ">{content}</p>
           <div className="flex gap-x-2 font-sf-light mt-1 text-sm">
             <button>{handleGetTimeOut(created_at)} </button>
             <button>Thích</button>
@@ -97,59 +97,36 @@ export default function CommentItem({ comment }: IProps) {
             >
               Phản hồi
             </button>
+            {usercommentid == currentUser?.id && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <button className="flex transition-all duration-500 justify-center items-center text-[24px] rounded-full bg-white hover:bg-gray-300 ">
+                    <MdMoreHoriz />
+                  </button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem
+                    onClick={() => {
+                      handleDeleteComment();
+                    }}
+                    key="delete"
+                    className="text-danger"
+                    color="danger"
+                  >
+                    Xoá
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            )}
           </div>
         </div>
-        {usercommentid == currentUserIds && (
-          <Dropdown>
-            <DropdownTrigger>
-              <button className="flex transition-all duration-500 justify-center items-center text-[20px] rounded-full bg-white hover:bg-gray-300 w-12 h-12">
-                <MdMoreHoriz />
-              </button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem
-                onClick={() => {
-                  handleDeleteComment();
-                }}
-                key="delete"
-                className="text-danger"
-                color="danger"
-              >
-                Xoá
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        )}
       </div>
       <div>
         {commentReply &&
-          commentReply.map(({ user: { avatar, full_name }, content }) => (
-            <ReplyComment
-              key={key}
-              avatar={avatar}
-              content={content}
-              fullName={full_name}
-            />
+          commentReply.map((commentData) => (
+            <ReplyCommentItem key={key} commentReplyData={commentData} />
           ))}
       </div>
     </div>
   );
 }
-
-interface IReplyComment {
-  avatar: string;
-  fullName: string;
-  content: string;
-}
-
-const ReplyComment = ({ avatar, fullName, content }: IReplyComment) => {
-  return (
-    <div className="flex gap-x-2 pl-10 mt-[10px]">
-      <AvatarOrName size="sm" src={avatar} name={fullName} />
-      <div>
-        <h1 className="font-sf-bold">{fullName}</h1>
-        <p className="font-sf-light">{content}</p>
-      </div>
-    </div>
-  );
-};

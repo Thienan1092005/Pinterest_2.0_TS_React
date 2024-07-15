@@ -26,15 +26,15 @@ export default function ImagePrevew() {
             <div
               key={image.id}
               className={cn(
-                "h-full !rounded-l-[25px] !relative !rounded-r-none overflow-hidden",
+                "!h-full !rounded-l-[25px] !relative !rounded-r-none overflow-hidden my-auto",
                 style.embla__slide
               )}
             >
-              <div className="relative w-full mx-auto">
+              <div className="relative flex-col !h-full justify-center items-center  w-full mx-auto">
                 <Image
                   loading="lazy"
                   classNames={{
-                    wrapper: "!w-full !max-w-full mx-auto",
+                    wrapper: "!w-full !max-w-full mx-auto !h-full ",
                   }}
                   className={cn(
                     "!w-full rounded-none !h-full max-h-[80vh] object-cover ",

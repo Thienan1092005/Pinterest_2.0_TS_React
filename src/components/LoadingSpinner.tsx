@@ -1,9 +1,11 @@
-import { Spinner } from "@nextui-org/react";
+import { Spinner, SpinnerProps } from "@nextui-org/react";
 
-export default function LoadingSpinner() {
+interface IProps extends SpinnerProps {}
+
+export default function LoadingSpinner<P extends IProps>({ ...rest }: P) {
   return (
     <div className="text-center">
-      <Spinner color="danger" size="lg" />
+      <Spinner color="danger" size="lg" {...rest} />
     </div>
   );
 }
