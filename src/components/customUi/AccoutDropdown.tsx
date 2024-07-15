@@ -85,11 +85,3 @@ export default function AccoutDropdown() {
     </DropdownMenu>
   );
 }
-const yuki = {
-  full_name: "Đặng Hoàng Thiên Ân",
-  age: 19,
-  date_ỏ_bỉht: "10/09/2005",
-  date_or_birth: "10/09/2005",
-  Zodiac_sign: "Virgo",
-  favorite: "code , trip , have more friend , ...",
-};
