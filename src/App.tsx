@@ -59,7 +59,7 @@ export default function App() {
                   </ContentLayout>
                 </CheckIsLogin>
               }
-            ></Route>
+            />
             <Route
               path="*"
               element={

@@ -40,7 +40,8 @@ export const handleRegisterThunk = createAsyncThunk(
   "authSlice/register",
   async (value: IUserRegister) => {
     try {
-      const data = await userRegisterApi(value);
+      const { data } = await userRegisterApi(value);
+      console.log(data);
       return data;
     } catch (error) {
       console.log(error);
@@ -61,12 +62,7 @@ export const authSlice = createSlice({
     },
   },
 
-  //các reducer còn lại :00 chắc thế :))
-
   extraReducers: (builder) => {
-    // 1 Promes có 3  trạng thái : fullfil : hoàn tất / peding : đang thực hiện / reject  : tạch
-    //addCaase nhận vào 2 đối số (trạng thái  của Pỏmiess và  một func để chạy )
-
     builder.addCase(handleLoginThunk.fulfilled, (state, action) => {
       localStorage.setItem("currentUser", JSON.stringify(action.payload.data));
       return {

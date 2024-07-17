@@ -103,8 +103,8 @@ export default forwardRef<HTMLButtonElement, IProps>(function ImageForm(
         </button>
         <input
           // ref={imgInputRef}
+          // className=" invisible"
           type="file"
-          // className=" hidden"
           {...register("files", {
             onChange: (e) => {
               setPreviewImage(URL.createObjectURL(e.target.files[0]));

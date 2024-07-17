@@ -34,7 +34,7 @@ export default function MediaItem({ mediaData }: IProps) {
         {/* Overlay */}
         <div
           onClick={() => {
-            navigate(`/pin/${id}/${slug}`);
+            navigate(`/pin/${id}/${encodeURIComponent(slug)}`);
           }}
           className="absolute z-10 rounded-[20px] w-full h-full top-0 left-0 bg-transparent  transition-colors duration-300 group-hover:bg-black/40"
         >

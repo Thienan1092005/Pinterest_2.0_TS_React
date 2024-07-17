@@ -15,11 +15,11 @@ export default function MediaDetall() {
   const { imageData, setImageData } = useImageContext();
   useEffect(() => {
     scroll({ top: 0, behavior: "smooth" });
-  }, [slug]);
+  }, [id]);
   useEffect(() => {
-    const getImgDetailBySlug = async () => {
+    const getImgDetailById = async () => {
       try {
-        if (!id || !slug) {
+        if (!id) {
           navigate("/news");
           return;
         }
@@ -32,7 +32,7 @@ export default function MediaDetall() {
         setIsLoading(false);
       }
     };
-    getImgDetailBySlug();
+    getImgDetailById();
   }, [id, navigate, setImageData, slug]);
   return (
     <>

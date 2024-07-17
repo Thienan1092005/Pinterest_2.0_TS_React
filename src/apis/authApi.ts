@@ -37,7 +37,7 @@ export const userRegisterApi = async ({
   email,
   password,
   username,
-}: IUserRegister): Promise<UserLoginResponeType> => {
+}: IUserRegister): Promise<ApiResponseType<UserLoginResponeType>> => {
   try {
     const { data } = await baseApi({
       method: "POST",
@@ -50,6 +50,7 @@ export const userRegisterApi = async ({
         age,
       },
     });
+
     return data;
   } catch (error) {
     console.log(error);

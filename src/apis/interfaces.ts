@@ -158,3 +158,16 @@ interface Usertype {
   id: number;
   type_name: string;
 }
+
+export interface UserInfomationType {
+  id: number;
+  username: string;
+  email: string;
+  full_name: string;
+  avatar: null;
+  age: number;
+  created_at: string;
+  updated_at: string;
+  is_hidden: number;
+  user_type: Usertype;
+}

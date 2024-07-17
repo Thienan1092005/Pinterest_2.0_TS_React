@@ -31,7 +31,6 @@ export default function SignupForm() {
   });
 
   const handleRegister = async (value: IFormValue) => {
-    // Convert age from string to number before dispatching the action
     const ageValue = Number(value.age);
     value.age = (Number.isNaN(ageValue) ? null : ageValue) as number | null;
 
