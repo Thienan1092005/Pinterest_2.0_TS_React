@@ -9,6 +9,7 @@ import MediaContext from "./modules/mediadetall/MediaContext";
 import { Toaster } from "react-hot-toast";
 import CheckIsLogin from "./components/CheckIsLogin";
 import AccoutDetall from "./modules/accoutdetall/AccoutDetall";
+import Userprofile from "./modules/userprofile";
 export default function App() {
   return (
     <>
@@ -58,6 +59,14 @@ export default function App() {
                     <AccoutDetall />
                   </ContentLayout>
                 </CheckIsLogin>
+              }
+            />
+            <Route
+              path="/profile/:id/:username"
+              element={
+                <ContentLayout>
+                  <Userprofile />
+                </ContentLayout>
               }
             />
             <Route

@@ -4,8 +4,15 @@ import { useSelector } from "react-redux";
 import { selectAuth } from "@/redux/slices/authSlice";
 import { MdOutlineFileUpload } from "react-icons/md";
 import FullRondedBtn from "./customUi/FullRondedBtn";
-import { Button, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalContent,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
 import { UserInfomationType } from "@/apis/interfaces";
+import EditUserForm from "./formSystem/EditUserForm";
 interface IProps {
   data: UserInfomationType;
 }
@@ -32,7 +39,17 @@ export default function UserCard({ data }: IProps) {
         <div className="  flex gap-x-4  justify-center items-center">
           <h1 className="  font-sf-bold text-[40px]">{data.full_name}</h1>
           {data.id == 13 && (
-            <FaCheckCircle className=" text-blue-400 text-[35px] " />
+            <Tooltip
+              placement="right-end"
+              classNames={{
+                content: "bg-black text-white max-w-[250px]",
+              }}
+              content="Các tài khoản có huy hiệu đã xác minh đều đã được xác thực  cá nhân/thương hiệu nổi tiếng."
+            >
+              <button className=" w-auto p-0 h-auto bg-transparent">
+                <FaCheckCircle className=" text-[#0866ff] text-[25px] " />
+              </button>
+            </Tooltip>
           )}
         </div>
         <p>
@@ -70,7 +87,7 @@ export default function UserCard({ data }: IProps) {
               </Button>
               <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
-                  <h1>hi</h1>
+                  <EditUserForm />
                 </ModalContent>
               </Modal>
             </div>

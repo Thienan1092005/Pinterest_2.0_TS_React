@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 import AvatarOrName from "./AvatarOrName";
 import { useNavigate } from "react-router";
 import { FaMoon, FaSun } from "react-icons/fa";
-
 export default function AccoutDropdown() {
   const dispatch = useDispatch();
   const Navigate = useNavigate();
@@ -31,7 +30,7 @@ export default function AccoutDropdown() {
       >
         <DropdownItem
           onClick={() => {
-            Navigate("/profile");
+            Navigate(`profile`);
           }}
           showDivider
         >

@@ -11,12 +11,14 @@ import {
 
 export const getListImagesApi = async (
   limit?: number,
-  page?: number
+  page?: number,
+  id?: number
 ): Promise<MediaListResponse> => {
   try {
+    const idPath = id ? "/" + id : "";
     const { data } = await baseApi({
       method: "GET",
-      url: "media/get-media-list",
+      url: "media/get-media-list" + idPath,
       params: {
         limit: limit || 30,
         page: page || 1,
@@ -163,6 +165,21 @@ export const createMediaUploadApi = async (
       url: "media/upload",
       method: "POST",
       data: formData,
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getListMediaSavedByUserIdApi = async (
+  id: number
+): Promise<ApiResponseType<SavedImageApiResponseType[]>> => {
+  try {
+    const { data } = await baseApi({
+      method: "GET",
+      url: "media/get-saved-medias-user/" + id,
     });
     return data;
   } catch (error) {

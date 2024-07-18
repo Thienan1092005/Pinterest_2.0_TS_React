@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import AvatarOrName from "./customUi/AvatarOrName";
 import { Fragment } from "react/jsx-runtime";
 import AccoutDropdown from "./customUi/AccoutDropdown";
-
 const navItems = [
   { name: "Trang chủ", to: "/news" },
   { name: "Tạo", to: "/createpost" },
@@ -72,7 +71,6 @@ export default function SignedHeader() {
         {listBtn.map(({ component }) => (
           <Fragment key={new Date().getTime()}>{component}</Fragment>
         ))}
-
         <Dropdown>
           <DropdownTrigger>
             <button className="hover:bg-pinter-gray grid place-items-center !duration-500 text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
@@ -89,7 +87,7 @@ export default function SignedHeader() {
 function ProfileAvatar() {
   const { currentUser } = useSelector(selectAuth);
   return (
-    <Link to="profile">
+    <Link to={`profile`}>
       <AvatarOrName
         className=" rounded-full "
         avatarUrl={currentUser?.avatar}

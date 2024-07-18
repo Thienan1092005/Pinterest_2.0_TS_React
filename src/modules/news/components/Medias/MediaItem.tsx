@@ -77,7 +77,11 @@ export default function MediaItem({ mediaData }: IProps) {
             content={user.full_name}
             placement="bottom"
           >
-            <button>
+            <button
+              onClick={() => {
+                navigate(`/profile/${user.id}/${user.username}`);
+              }}
+            >
               <LiItemHaveABlackBorder>{user.username}</LiItemHaveABlackBorder>
             </button>
           </Tooltip>
