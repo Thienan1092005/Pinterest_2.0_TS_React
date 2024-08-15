@@ -10,6 +10,11 @@ import { Toaster } from "react-hot-toast";
 import CheckIsLogin from "./components/CheckIsLogin";
 import AccoutDetall from "./modules/accoutdetall/AccoutDetall";
 import Userprofile from "./modules/userprofile";
+import AdminRoute from "./routes/AdminRoute";
+import Admin from "./modules/admin/Admin";
+import UserManager from "./modules/admin/pages/UserManager";
+import ImageManager from "./modules/admin/pages/ImageManager";
+import CommentManager from "./modules/admin/pages/CommentManager";
 export default function App() {
   return (
     <>
@@ -69,15 +74,29 @@ export default function App() {
                 </ContentLayout>
               }
             />
-            <Route
-              path="*"
-              element={
-                <ContentLayout>
-                  <NotFound />
-                </ContentLayout>
-              }
-            />
           </Route>
+          <Route
+            path="admin"
+            element={
+              <CheckIsLogin>
+                <AdminRoute>
+                  <Admin />
+                </AdminRoute>
+              </CheckIsLogin>
+            }
+          >
+            <Route path="usermanagerment" element={<UserManager />} />
+            <Route path="imagemanagerment" element={<ImageManager />} />
+            <Route path="commentmanagerment" element={<CommentManager />} />
+          </Route>
+          <Route
+            path="*"
+            element={
+              <ContentLayout>
+                <NotFound />
+              </ContentLayout>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

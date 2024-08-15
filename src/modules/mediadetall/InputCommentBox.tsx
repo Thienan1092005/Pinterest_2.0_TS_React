@@ -1,5 +1,11 @@
 import AvatarOrName from "@/components/customUi/AvatarOrName";
-import { Input } from "@nextui-org/react";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Input,
+} from "@nextui-org/react";
 import { IoCloseCircleSharp, IoSend } from "react-icons/io5";
 import cn from "classnames";
 import { useSelector } from "react-redux";
@@ -9,6 +15,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { createCommentApi } from "@/apis/mediaApi";
 import { useCommentContext } from "@/hooks/useCommentContext";
+import EmojiPicker from "emoji-picker-react";
 export default function InputCommentBox() {
   const { id } = useParams();
   const { toggleReFetch, replyTarget, setReplyTarget } = useCommentContext();
@@ -17,16 +24,20 @@ export default function InputCommentBox() {
   const inputCommentRef = useRef<HTMLInputElement>(null);
   const handleComment = async (e: FormEvent) => {
     e.preventDefault();
-    if (!id || commentContent == "") return;
-    if (replyTarget) {
-      await createCommentApi(+id, commentContent, replyTarget.userTargetId);
-      setCommentContent("");
-      setReplyTarget(undefined);
-      toggleReFetch();
-    } else {
-      await createCommentApi(+id, commentContent);
-      setCommentContent("");
-      toggleReFetch();
+    try {
+      if (!id || commentContent == "") return;
+      if (replyTarget) {
+        await createCommentApi(+id, commentContent, replyTarget.userTargetId);
+        setCommentContent("");
+        setReplyTarget(undefined);
+        toggleReFetch();
+      } else {
+        await createCommentApi(+id, commentContent);
+        setCommentContent("");
+        toggleReFetch();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   useEffect(() => {
@@ -68,9 +79,25 @@ export default function InputCommentBox() {
                 <IoCloseCircleSharp />
               </button>
             )}
-            <button className="  px-4 py-2  ">
-              <MdEmojiEmotions />
-            </button>
+            <Dropdown placement="top" closeOnSelect={false}>
+              <DropdownTrigger>
+                <button className="  px-4 py-2  ">
+                  <MdEmojiEmotions />
+                </button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem>
+                  <EmojiPicker
+                    onEmojiClick={(e) => {
+                      setCommentContent((prew) => prew + e.emoji);
+                    }}
+                    open={true}
+                    className="top-0 absolute"
+                  />
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+
             <button className="px-4 py-2  ">
               <IoSend />
             </button>

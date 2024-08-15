@@ -48,6 +48,7 @@ export default function UnSignHeader() {
               Đăng Nhập
             </Button>
             <Modal
+              className=" m-auto"
               isOpen={loginDisclosure.isOpen}
               onOpenChange={loginDisclosure.onOpenChange}
             >
@@ -64,10 +65,11 @@ export default function UnSignHeader() {
               Đăng Ký
             </Button>
             <Modal
+              className=" m-auto  "
               isOpen={signupDisclosure.isOpen}
               onOpenChange={signupDisclosure.onOpenChange}
             >
-              <ModalContent>{<SignupForm />}</ModalContent>
+              <ModalContent className=" ">{<SignupForm />}</ModalContent>
             </Modal>
           </div>
         </div>

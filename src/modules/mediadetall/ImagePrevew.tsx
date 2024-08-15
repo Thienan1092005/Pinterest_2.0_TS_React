@@ -44,7 +44,7 @@ export default function ImagePrevew() {
                   alt={image.img_name}
                 />
                 <Button className=" z-50 absolute bottom-5 left-10">
-                  fjsdalfjasdklfj
+                  Xem hình ảnh
                 </Button>
               </div>
             </div>

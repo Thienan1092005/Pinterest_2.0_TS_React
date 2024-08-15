@@ -20,7 +20,7 @@ const initialState: AuthState = {
   currentUser: getCurrentUserLocal || null,
 };
 
-//Tạo hàm handleLogin  với ReDux thunk nhw ghi hàm bình thường :33
+//Tạo hàm handleLogin với ReDux thunk
 export const handleLoginThunk = createAsyncThunk(
   "authSlice/login",
   async (values: {
@@ -36,6 +36,7 @@ export const handleLoginThunk = createAsyncThunk(
     }
   }
 );
+
 export const handleRegisterThunk = createAsyncThunk(
   "authSlice/register",
   async (value: IUserRegister) => {
@@ -49,6 +50,7 @@ export const handleRegisterThunk = createAsyncThunk(
     }
   }
 );
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -60,11 +62,16 @@ export const authSlice = createSlice({
       setTimeout(() => location.reload(), 500);
       return { ...state, isLogin: false, currentUser: null };
     },
+    setCurrentUser: (state, { payload }: { payload: UserLoginResponeType }) => {
+      localStorage.setItem("currentUser", JSON.stringify(payload));
+      return { ...state, isLogin: true, currentUser: payload };
+    },
   },
 
   extraReducers: (builder) => {
     builder.addCase(handleLoginThunk.fulfilled, (state, action) => {
       localStorage.setItem("currentUser", JSON.stringify(action.payload.data));
+      console.log(action.payload.data);
       return {
         ...state,
         isLogin: true,
@@ -96,7 +103,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setCurrentUser } = authSlice.actions;
 export default authSlice.reducer;
 export const selectAuth = (state: RootState) => state.auth;
 export type { AuthState };

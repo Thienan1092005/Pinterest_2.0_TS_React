@@ -14,7 +14,7 @@ export default function CustomInput({
   ...props
 }: IPorps) {
   return (
-    <div className={`text-black mb-4 text-left ${className}`}>
+    <div className={`text-black mb-2 text-left ${className}`}>
       <label className=" block pb-2" htmlFor={register?.name}>
         {lableName}
       </label>

@@ -12,7 +12,8 @@ import {
 export const getListImagesApi = async (
   limit?: number,
   page?: number,
-  id?: number
+  id?: number,
+  keyword?: string
 ): Promise<MediaListResponse> => {
   try {
     const idPath = id ? "/" + id : "";
@@ -22,6 +23,7 @@ export const getListImagesApi = async (
       params: {
         limit: limit || 30,
         page: page || 1,
+        keyword: keyword || "",
       },
     });
     return data.data;
@@ -185,5 +187,45 @@ export const getListMediaSavedByUserIdApi = async (
   } catch (error) {
     console.log(error);
     throw error;
+  }
+};
+
+export const AdminUpdatePinApi = async (
+  {
+    name,
+    slug,
+    description,
+    isHidden,
+  }: {
+    name: string;
+    slug: string;
+    description: string;
+    isHidden: number;
+  },
+  id: number
+) => {
+  try {
+    await baseApi({
+      method: "PUT",
+      url: "media/update-media-admin/" + id,
+      data: {
+        name: name || "",
+        slug: slug || "",
+        description: description || "",
+        isHidden: isHidden || "",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const adminDeleteCommentApi = async (id: number) => {
+  try {
+    await baseApi({
+      method: "DELETE",
+      url: "media/delete-comment/" + id,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };

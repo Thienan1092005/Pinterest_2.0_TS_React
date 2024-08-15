@@ -8,6 +8,7 @@ import {
   DropdownTrigger,
   Modal,
   ModalContent,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import RoundedButton from "@/components/customUi/RoundedButton";
@@ -24,6 +25,7 @@ import cn from "classnames";
 import LoginForm from "@/components/formSystem/LoginForm";
 import { useToggle } from "@smojs/react-hooks";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import LiItemHaveABlackBorder from "@/components/customUi/LiItemHaveABlackBorder";
 export default function ImagePost() {
   const { imageData } = useImageContext();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -160,7 +162,24 @@ export default function ImagePost() {
         <div className="flex justify-between w-full">
           <div className="flex gap-x-4 items-center font-sf-regular">
             <AvatarOrName size="md" src={avatar} fullName={full_name} />
-            <h1>{full_name}</h1>
+            <div>
+              <h1 className=" font-sf-bold">{full_name}</h1>
+              <Tooltip
+                className="bg-black text-white"
+                content={user.full_name}
+                placement="bottom"
+              >
+                <button
+                  onClick={() =>
+                    navigate(`/profile/${user.id}/${user.username}`)
+                  }
+                >
+                  <LiItemHaveABlackBorder>
+                    {user.username}
+                  </LiItemHaveABlackBorder>
+                </button>
+              </Tooltip>
+            </div>
           </div>
           <Button
             className={cn(

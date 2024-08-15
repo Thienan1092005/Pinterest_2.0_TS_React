@@ -3,6 +3,7 @@ import UnSignHeader from "@/components/UnSignHeader";
 import SignedHeader from "@/components/SignedHeader";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import MediaSearch from "@/modules/news/components/mediasearch/MediaSearch";
 
 export default function MainLayout() {
   const { isLogin } = useSelector((state: RootState) => state.auth);
@@ -11,6 +12,7 @@ export default function MainLayout() {
     <>
       {isLogin ? <SignedHeader /> : <UnSignHeader />}
       <Outlet />
+      <MediaSearch />
     </>
   );
 }

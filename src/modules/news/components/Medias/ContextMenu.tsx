@@ -1,4 +1,5 @@
 import ShortTextHaveGrayHover from "@/components/customUi/ShortTextHaveGrayHover";
+import AdminGuard from "@/guards/AdminGuard";
 interface IProps {
   className?: string;
   imgUrl: string;
@@ -34,6 +35,15 @@ export default function ContextMenu({ className, imgUrl }: IProps) {
           {item.title}
         </ShortTextHaveGrayHover>
       ))}
+      <AdminGuard>
+        <ShortTextHaveGrayHover
+          onClick={() => {
+            console.log(123);
+          }}
+        >
+          xoá ghim
+        </ShortTextHaveGrayHover>
+      </AdminGuard>
     </div>
   );
 }

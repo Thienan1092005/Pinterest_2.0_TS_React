@@ -7,38 +7,52 @@ import { AiFillMessage } from "react-icons/ai";
 import { GoChevronUp } from "react-icons/go";
 import { Dropdown, DropdownTrigger } from "@nextui-org/react";
 import { selectAuth } from "@/redux/slices/authSlice";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AvatarOrName from "./customUi/AvatarOrName";
-import { Fragment } from "react/jsx-runtime";
 import AccoutDropdown from "./customUi/AccoutDropdown";
+import { useEffect, useState, Fragment } from "react";
+import { useDebounce } from "@smojs/react-hooks";
+import { openSearchModal, putSearchKeyWord } from "@/redux/slices/searchSlice";
+
 const navItems = [
   { name: "Trang chủ", to: "/news" },
   { name: "Tạo", to: "/createpost" },
 ];
-const listBtn = [
-  {
-    component: (
-      <RoundedButton className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
-        <FaBell />
-      </RoundedButton>
-    ),
-  },
-  {
-    component: (
-      <RoundedButton className="hover:bg-pinter-gray text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
-        <AiFillMessage />
-      </RoundedButton>
-    ),
-  },
-  {
-    component: <ProfileAvatar />,
-  },
-];
+
 export default function SignedHeader() {
+  const [searchContent, setSearchContent] = useState("");
+  const searchDebounceValue = useDebounce(searchContent);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!searchDebounceValue && searchDebounceValue != "") return;
+    dispatch(putSearchKeyWord(searchDebounceValue));
+  }, [searchDebounceValue, dispatch]);
+
+  const renderButtons = [
+    {
+      component: (
+        <RoundedButton className="hover:bg-pinter-gray text-[24px] bg-white !text-black !rounded-full w-12 h-12">
+          <FaBell />
+        </RoundedButton>
+      ),
+    },
+    {
+      component: (
+        <RoundedButton className="hover:bg-pinter-gray text-[24px] bg-white !text-black !rounded-full w-12 h-12">
+          <AiFillMessage />
+        </RoundedButton>
+      ),
+    },
+    {
+      component: <ProfileAvatar />,
+    },
+  ];
+
   return (
-    <div className=" px-[16px] py-[4px] z-20 h-[80px] fixed font-sf-bold  flex w-full bg-white justify-between text-[16px] items-center">
+    <div className="px-[16px] py-[4px] z-20 h-[80px] fixed font-sf-bold flex w-full bg-white justify-between text-[16px] items-center">
       {/* header left */}
-      <div className="flex justify-around items-center gap-x-2 ">
+      <div className="flex justify-around items-center gap-x-2">
         <Link to={"/news"}>
           <FaPinterest className="text-[24px] text-primary-red-color mr-1" />
         </Link>
@@ -46,35 +60,38 @@ export default function SignedHeader() {
           <NavLink
             to={to}
             key={to}
-            className={({ isActive }) => {
-              return classNames(
-                " px-4 h-[48px] shrink-[0] bg-white flex justify-center items-center rounded-[25px]  text-black",
+            className={({ isActive }) =>
+              classNames(
+                "px-4 h-[48px] shrink-[0] bg-white flex justify-center items-center rounded-[25px] text-black",
                 { "!bg-black !text-white": isActive }
-              );
-            }}
+              )
+            }
           >
             {name}
           </NavLink>
         ))}
       </div>
       {/* header center */}
-      <div className="w-[75%]  relative bg-[#f1f1f1] h-[48px] rounded-[25px] ">
+      <div className="w-[75%] 2xl:w-1/2 relative bg-[#f1f1f1] h-[48px] rounded-[25px]">
         <input
-          className=" absolute text-black/60 font-sf-medium pl-[35px] bg-transparent rounded-[25px] outline-none border-[3px]  focus:border-ocren-blue   w-full h-full "
+          value={searchContent}
+          onChange={(e) => setSearchContent(e.target.value)}
+          className="absolute text-black/60 font-sf-medium pl-[35px] bg-transparent rounded-[25px] outline-none border-[3px] focus:border-ocren-blue w-full h-full"
           type="text"
-          placeholder="tìm kiếm ý tưởng , hình ảnh , nhiều thứ khác .... "
+          placeholder="tìm kiếm ý tưởng, hình ảnh, nhiều thứ khác...."
+          onClick={() => dispatch(openSearchModal())}
         />
-        <FaMagnifyingGlass className=" absolute left-[16px] top-1/2 -translate-y-1/2 " />
+        <FaMagnifyingGlass className="absolute left-[16px] top-1/2 -translate-y-1/2" />
       </div>
-      {/* header  right  */}
+      {/* header right */}
       <div className="flex justify-around items-center">
-        {listBtn.map(({ component }) => (
-          <Fragment key={new Date().getTime()}>{component}</Fragment>
+        {renderButtons.map(({ component }, i) => (
+          <Fragment key={i}>{component}</Fragment>
         ))}
         <Dropdown>
           <DropdownTrigger>
-            <button className="hover:bg-pinter-gray grid place-items-center !duration-500 text-[24px]  bg-white !text-black !rounded-full w-12 h-12">
-              <GoChevronUp className=" rotate-[180deg]" />
+            <button className="hover:bg-pinter-gray grid place-items-center !duration-500 text-[24px] bg-white !text-black !rounded-full w-12 h-12">
+              <GoChevronUp className="rotate-[180deg]" />
             </button>
           </DropdownTrigger>
           <AccoutDropdown />
@@ -89,7 +106,7 @@ function ProfileAvatar() {
   return (
     <Link to={`profile`}>
       <AvatarOrName
-        className=" rounded-full "
+        className="rounded-full"
         avatarUrl={currentUser?.avatar}
         fullName={currentUser?.full_name || "Noname"}
       />

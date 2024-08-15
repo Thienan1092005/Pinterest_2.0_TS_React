@@ -8,12 +8,19 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens: {
+      sm: { max: "480px" },
+      md: { max: "768px" },
+      lg: { max: "976px" },
+      xl: { max: "1440px" },
+      "2xl": { max: "1536px" },
+    },
     extend: {
       colors: {
         "primary-red-color": "#e60023",
         "ocren-blue": "#7fc1ff",
         "pinter-gray": "#f1f1f1",
-        " gray-color-300 ": "#e9e9e9",
+        "gray-color-300 ": "#e9e9e9",
       },
       fontFamily: {
         "sf-black": ["SF-Pro-Display-Black", "sans-serif"],

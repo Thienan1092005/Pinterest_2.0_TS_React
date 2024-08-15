@@ -1,33 +1,27 @@
-import { useEffect, useState } from "react";
-import { getListImagesApi } from "@/apis/mediaApi";
 import MediaItem from "./MediaItem";
-import { MediaItemType } from "@/apis/interfaces";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useParams } from "react-router-dom";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getListImagesApi } from "@/apis/mediaApi";
 
 export default function MediaList() {
   const { slug } = useParams();
 
-  const [mediaList, setMediaList] = useState<null | MediaItemType[]>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const getMediaList = async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["mediaList"],
+    queryFn: async function () {
       try {
-        setIsLoading(true);
         const { items } = await getListImagesApi();
-        setMediaList(items);
+        return items;
       } catch (error) {
         console.log(error);
-      } finally {
-        setIsLoading(false);
       }
-    };
-    getMediaList();
-  }, []);
-
-  const newMediaList = mediaList?.filter((item) => item.slug !== slug) || [];
+    },
+    staleTime: 2 * 60 * 1000,
+    placeholderData: keepPreviousData,
+  });
+  const newMediaList = data?.filter((item) => item.slug !== slug) || [];
 
   return (
     <>

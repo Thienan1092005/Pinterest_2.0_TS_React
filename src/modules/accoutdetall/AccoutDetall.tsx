@@ -12,7 +12,7 @@ export default function AccoutDetall() {
   const { currentUser } = useSelector(selectAuth);
   const { data, isLoading } = useAsync(() => {
     return getUserInfoApi(currentUser?.id || -1);
-  }, []);
+  }, [currentUser?.accessToken]);
   const getUserImageUploaded = async () => {
     try {
       const data = getListImagesApi(undefined, undefined, currentUser?.id);

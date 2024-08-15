@@ -142,12 +142,14 @@ interface Image {
   created_at: string;
 }
 
-interface User {
+export interface User {
   id: number;
   username: string;
   full_name: string;
   age: number;
   avatar: string;
+  email: string;
+  password: string;
   user_type: Usertype;
   created_at: string;
   updated_at: string;

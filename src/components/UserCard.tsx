@@ -36,8 +36,10 @@ export default function UserCard({ data }: IProps) {
         />
       </div>
       <div className=" font-sf-regular mt-[80px] text-[16px]">
-        <div className="  flex gap-x-4  justify-center items-center">
-          <h1 className="  font-sf-bold text-[40px]">{data.full_name}</h1>
+        <div>
+          <samp className=" mr-3  font-sf-bold text-[40px]">
+            {data.full_name}
+          </samp>
           {data.id == 13 && (
             <Tooltip
               placement="right-end"
@@ -85,9 +87,13 @@ export default function UserCard({ data }: IProps) {
               >
                 Chỉnh sửa hồ sơ
               </Button>
-              <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+              <Modal
+                className=" m-auto"
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+              >
                 <ModalContent>
-                  <EditUserForm />
+                  {(onClose) => <EditUserForm onClose={onClose} />}
                 </ModalContent>
               </Modal>
             </div>

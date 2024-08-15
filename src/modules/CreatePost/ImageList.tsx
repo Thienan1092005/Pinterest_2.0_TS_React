@@ -59,7 +59,6 @@ export default function ImageList() {
             {isMiniSize ? <FaPlus /> : "Tạo mới"}
           </button>
         </div>
-        {/* <HiddenByMinisize isMiniSize={isMiniSize}></HiddenByMinisize> */}
       </div>
       <HiddenByMinisize isMiniSize={isMiniSize}>
         <div className="p-4">

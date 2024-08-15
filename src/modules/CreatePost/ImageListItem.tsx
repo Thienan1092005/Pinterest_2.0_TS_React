@@ -24,7 +24,7 @@ export default function ImageListItem({ imgUrl, index, setListImage }: IProps) {
       </div>
       <Dropdown>
         <DropdownTrigger>
-          <button className=" hidden  group-hover:bg-gray-200  group-hover:flex  transition-all duration-500 justify-center items-center text-[20px] rounded-full bg-white hover:bg-gray-300 w-12 h-12">
+          <button className="  group-hover:bg-gray-200  group-hover:flex  transition-all duration-500 justify-center items-center text-[20px] rounded-full bg-white hover:bg-gray-300 w-12 h-12">
             <MdMoreHoriz />
           </button>
         </DropdownTrigger>
