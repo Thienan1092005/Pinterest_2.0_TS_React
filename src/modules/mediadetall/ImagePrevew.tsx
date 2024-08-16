@@ -4,6 +4,7 @@ import { Navigate } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import style from "./style.module.css";
 import cn from "classnames";
+import { Link } from "react-router-dom";
 
 export default function ImagePrevew() {
   const { imageData } = useImageContext();
@@ -43,9 +44,11 @@ export default function ImagePrevew() {
                   src={image.url}
                   alt={image.img_name}
                 />
-                <Button className=" z-50 absolute bottom-5 left-10">
-                  Xem hình ảnh
-                </Button>
+                <Link to={image.url} target="_blank">
+                  <Button className=" z-50 absolute bottom-5 left-10">
+                    Xem hình ảnh
+                  </Button>
+                </Link>
               </div>
             </div>
           ))}
