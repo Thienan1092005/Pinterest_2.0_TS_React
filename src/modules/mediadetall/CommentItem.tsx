@@ -19,16 +19,15 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { MdMoreHoriz } from "react-icons/md";
 import ReplyCommentItem from "./ReplyCommentItem";
-
 interface IProps {
   comment: GetCommentsByIdItemtype;
 }
-
 export default function CommentItem({ comment }: IProps) {
-  const { replyTarget, toggleReFetch, setReplyTarget } = useCommentContext();
+  const { toggleReFetch, setCreateComment, createComment } =
+    useCommentContext();
   const { id } = useParams();
   const { currentUser } = useSelector(selectAuth);
-
+  const [showReply, setShowReply] = useState(false);
   const key = useId();
   const [commentReply, setCommentReply] = useState<
     GetCommentsByIdItemtype[] | null
@@ -44,7 +43,6 @@ export default function CommentItem({ comment }: IProps) {
       console.log(error);
     }
   };
-
   useEffect(() => {
     const getCommentReply = async () => {
       try {
@@ -63,11 +61,13 @@ export default function CommentItem({ comment }: IProps) {
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setReplyTarget(undefined);
+        setCreateComment((p) => ({
+          ...p,
+          reply: { ...p.reply, isReply: false },
+        }));
       }
     };
-
-    if (replyTarget) {
+    if (createComment.reply.isReply) {
       window.addEventListener("keydown", handleKeydown);
     } else {
       window.removeEventListener("keydown", handleKeydown);
@@ -75,7 +75,7 @@ export default function CommentItem({ comment }: IProps) {
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, [replyTarget, setReplyTarget]);
+  }, [setCreateComment, createComment.reply.isReply]);
 
   return (
     <div className="w-full mb-5">
@@ -89,10 +89,16 @@ export default function CommentItem({ comment }: IProps) {
             <button>Thích</button>
             <button
               onClick={() =>
-                setReplyTarget({
-                  userTargetName: full_name,
-                  userTargetId: commentId,
-                })
+                setCreateComment((prev) => ({
+                  ...prev,
+                  isCreating: true,
+                  reply: {
+                    ...prev.reply,
+                    isReply: true,
+                    replyToUser: full_name,
+                    replyToId: commentId,
+                  },
+                }))
               }
             >
               Phản hồi
@@ -119,10 +125,17 @@ export default function CommentItem({ comment }: IProps) {
               </Dropdown>
             )}
           </div>
+          {commentReply && showReply == false && commentReply?.length >= 1 && (
+            <button
+              onClick={() => setShowReply(true)}
+              className=" mt-2"
+            >{`xem tất cả ${commentReply?.length} câu trả lời`}</button>
+          )}
         </div>
       </div>
       <div>
         {commentReply &&
+          showReply == true &&
           commentReply.map((commentData) => (
             <ReplyCommentItem key={key} commentReplyData={commentData} />
           ))}

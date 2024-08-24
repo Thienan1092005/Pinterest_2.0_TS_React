@@ -18,16 +18,10 @@ interface IProps {
 }
 
 export default function ReplyCommentItem({ commentReplyData }: IProps) {
-  const {
-    content,
-    user,
-    created_at,
-    id: commentId,
-    reply_to,
-  } = commentReplyData;
+  const { content, user, created_at, id: commentId } = commentReplyData;
   const { avatar, full_name, id: usercommentid } = user;
   const { currentUser } = useSelector(selectAuth);
-  const { toggleReFetch, setReplyTarget } = useCommentContext();
+  const { toggleReFetch, setCreateComment } = useCommentContext();
   return (
     <div className="flex gap-x-2 pl-10 mt-[10px]">
       <AvatarOrName size="sm" src={avatar} name={full_name} />
@@ -38,13 +32,18 @@ export default function ReplyCommentItem({ commentReplyData }: IProps) {
           <button>{handleGetTimeOut(created_at)} </button>
           <button>Thích</button>
           <button
-            onClick={() => {
-              if (!reply_to) return;
-              setReplyTarget({
-                userTargetName: full_name,
-                userTargetId: reply_to,
-              });
-            }}
+            onClick={() =>
+              setCreateComment((prev) => ({
+                ...prev,
+                isCreating: true,
+                reply: {
+                  ...prev.reply,
+                  isReply: true,
+                  replyToUser: full_name,
+                  replyToId: usercommentid,
+                },
+              }))
+            }
           >
             Phản hồi
           </button>

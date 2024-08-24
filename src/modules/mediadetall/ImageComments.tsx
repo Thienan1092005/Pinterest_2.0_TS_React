@@ -1,12 +1,23 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentItem from "./CommentItem";
 import { useCommentContext } from "@/hooks/useCommentContext";
-
+import { useEffect, useState } from "react";
+import { GetCommentsByIdItemtype } from "@/apis/interfaces";
+import { useSelector } from "react-redux";
+import { selectAuth } from "@/redux/slices/authSlice";
+import WaitingComment from "./WaitingComment";
 export default function ImageComments() {
-  const { commentList, isLoading } = useCommentContext();
+  const { commentList, createComment, isLoading } = useCommentContext();
+  const [currentCommentList, setCurrentCommnetList] =
+    useState<GetCommentsByIdItemtype[]>();
+  const { currentUser } = useSelector(selectAuth);
   const notReplyComment = commentList?.filter((comment) => {
     return !comment.reply_to;
   });
+  useEffect(() => {
+    if (!notReplyComment) return;
+    setCurrentCommnetList(notReplyComment);
+  }, [commentList, notReplyComment]);
   return (
     <>
       {isLoading ? (
@@ -18,17 +29,23 @@ export default function ImageComments() {
           ) : (
             <>
               <h1 className=" mb-5 font-sf-bold ">{" Tất cả  nhận xét"}</h1>
-              {notReplyComment?.map((comment) => (
+              {currentCommentList?.map((comment) => (
                 <CommentItem comment={comment} key={comment.id} />
               ))}
             </>
+          )}
+          {currentUser && createComment.isCreating && (
+            <WaitingComment
+              avatar={currentUser?.avatar}
+              full_name={currentUser?.full_name}
+              content={createComment.content}
+            />
           )}
         </div>
       )}
     </>
   );
 }
-
 const EmptyCommnet = () => {
   return (
     <>

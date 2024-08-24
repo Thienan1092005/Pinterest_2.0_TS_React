@@ -3,7 +3,16 @@ import { GetCommentsByIdItemtype } from "@/apis/interfaces";
 import { useAsync, useToggle } from "@smojs/react-hooks";
 import { useParams } from "react-router";
 import { getCommentsByImageIdApi } from "@/apis/mediaApi";
-
+interface CreateComment {
+  isCreating: boolean;
+  reply: {
+    isReply: boolean;
+    replyToId: number;
+    replyToUser: string;
+  };
+  content: string;
+  commentToPinId: number;
+}
 interface CommentContextType {
   commentList: GetCommentsByIdItemtype[] | null;
   setCommentList: React.Dispatch<
@@ -12,12 +21,9 @@ interface CommentContextType {
   isLoading: boolean;
   error: Error | null;
   toggleReFetch: (value?: boolean | undefined) => void;
-  replyTarget: { userTargetName: string; userTargetId: number } | undefined;
-  setReplyTarget: React.Dispatch<
-    React.SetStateAction<
-      { userTargetName: string; userTargetId: number } | undefined
-    >
-  >;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  createComment: CreateComment;
+  setCreateComment: React.Dispatch<React.SetStateAction<CreateComment>>;
 }
 
 export const CommentContext = createContext<CommentContextType | undefined>(
@@ -26,9 +32,17 @@ export const CommentContext = createContext<CommentContextType | undefined>(
 
 const CommentContextProvider = ({ children }: { children: ReactNode }) => {
   const [isReFetch, toggleReFetch] = useToggle();
-  const [replyTarget, setReplyTarget] = useState<
-    { userTargetName: string; userTargetId: number } | undefined
-  >();
+  const [createComment, setCreateComment] = useState<CreateComment>({
+    isCreating: false,
+    reply: {
+      isReply: false,
+      replyToId: 0,
+      replyToUser: "",
+    },
+    content: "",
+    commentToPinId: 0,
+  });
+  const [page, setPage] = useState(1);
   const [commentList, setCommentList] = useState<
     GetCommentsByIdItemtype[] | null
   >(null);
@@ -40,11 +54,19 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data, error, isLoading } = useAsync(fetchComments, [id, isReFetch]);
+  const { data, error, isLoading } = useAsync(fetchComments, [
+    id,
+    page,
+    isReFetch,
+  ]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    setCommentList(data?.data.items || null);
+    if (!data) return;
+    setCommentList((prev) => {
+      if (!prev) return data?.data.items || null;
+      return [...prev, ...data.data.items];
+    });
   }, [data]);
 
   return (
@@ -55,8 +77,9 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         error,
         toggleReFetch,
-        replyTarget,
-        setReplyTarget,
+        setPage,
+        createComment,
+        setCreateComment,
       }}
     >
       {children}

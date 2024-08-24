@@ -50,7 +50,7 @@ export const getImageDetailById = async (
 
 export const getCommentsByImageIdApi = async (
   id: number,
-  optionals?: { page?: number; replyTo?: number }
+  optionals?: { page?: number; replyTo?: number; limit?: number }
 ): Promise<
   ApiResponseType<ApiResponsePaginationType<GetCommentsByIdItemtype>>
 > => {
@@ -61,6 +61,7 @@ export const getCommentsByImageIdApi = async (
       params: {
         page: optionals?.page || 1,
         replyTo: optionals?.replyTo || undefined,
+        limit: optionals?.limit || 10,
       },
     });
     return data;

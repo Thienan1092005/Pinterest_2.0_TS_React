@@ -10,11 +10,12 @@ import { Toaster } from "react-hot-toast";
 import CheckIsLogin from "./components/CheckIsLogin";
 import AccoutDetall from "./modules/accoutdetall/AccoutDetall";
 import Userprofile from "./modules/userprofile";
-import AdminRoute from "./routes/AdminRoute";
 import Admin from "./modules/admin/Admin";
 import UserManager from "./modules/admin/pages/UserManager";
 import ImageManager from "./modules/admin/pages/ImageManager";
 import CommentManager from "./modules/admin/pages/CommentManager";
+import AdminGuard from "./guards/AdminGuard";
+import CommentDetallManager from "./modules/admin/CommentDetallManager";
 export default function App() {
   return (
     <>
@@ -79,15 +80,19 @@ export default function App() {
             path="admin"
             element={
               <CheckIsLogin>
-                <AdminRoute>
+                <AdminGuard>
                   <Admin />
-                </AdminRoute>
+                </AdminGuard>
               </CheckIsLogin>
             }
           >
             <Route path="usermanagerment" element={<UserManager />} />
             <Route path="imagemanagerment" element={<ImageManager />} />
             <Route path="commentmanagerment" element={<CommentManager />} />
+            <Route
+              path="commentmanagerment/pin/:id"
+              element={<CommentDetallManager />}
+            />
           </Route>
           <Route
             path="*"

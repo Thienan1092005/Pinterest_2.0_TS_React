@@ -15,10 +15,8 @@ import { MdDelete } from "react-icons/md";
 
 export default function CommentTable({
   comments,
-  searchComment,
 }: {
   comments?: GetCommentsByIdItemtype[];
-  searchComment: string;
 }) {
   const queryClient = useQueryClient();
   const handleDeleteComment = async (id: number) => {
@@ -46,13 +44,7 @@ export default function CommentTable({
           <TableColumn>Reply to id </TableColumn>
           <TableColumn>Funtions</TableColumn>
         </TableHeader>
-        <TableBody
-          emptyContent={
-            searchComment == ""
-              ? "nhập id voà ô tìm kiếm phía trên "
-              : "id bạn nhập không đúng hoặc id đã bị xoá , kiểm tra lại id của bạn đã nhập"
-          }
-        >
+        <TableBody emptyContent={"Không có comment nào để hiển thị"}>
           {comments?.map(
             (
               { content, id, reply_to, user: { avatar, full_name, username } },

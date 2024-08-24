@@ -7,5 +7,6 @@ export default function AdminGuard({
   children: React.ReactNode;
 }) {
   const { currentUser } = useSelector(selectAuth);
-  if (currentUser?.id == 13) return <div>{children}</div>;
+  if (currentUser?.user_type.type_name === "Admin")
+    return <div>{children}</div>;
 }

@@ -18,7 +18,8 @@ import { useCommentContext } from "@/hooks/useCommentContext";
 import EmojiPicker from "emoji-picker-react";
 export default function InputCommentBox() {
   const { id } = useParams();
-  const { toggleReFetch, replyTarget, setReplyTarget } = useCommentContext();
+  const { toggleReFetch, createComment, setCreateComment } =
+    useCommentContext();
   const { currentUser } = useSelector(selectAuth);
   const [commentContent, setCommentContent] = useState<string>("");
   const inputCommentRef = useRef<HTMLInputElement>(null);
@@ -26,10 +27,14 @@ export default function InputCommentBox() {
     e.preventDefault();
     try {
       if (!id || commentContent == "") return;
-      if (replyTarget) {
-        await createCommentApi(+id, commentContent, replyTarget.userTargetId);
+      setCreateComment((p) => ({ ...p, isCreating: true }));
+      if (createComment.reply.isReply) {
+        await createCommentApi(
+          +id,
+          commentContent,
+          createComment.reply.replyToId
+        );
         setCommentContent("");
-        setReplyTarget(undefined);
         toggleReFetch();
       } else {
         await createCommentApi(+id, commentContent);
@@ -38,11 +43,17 @@ export default function InputCommentBox() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setCreateComment((p) => ({
+        ...p,
+        isCreating: false,
+        reply: { ...p.reply, isReply: false },
+      }));
     }
   };
   useEffect(() => {
-    if (replyTarget) inputCommentRef.current?.focus();
-  }, [replyTarget]);
+    if (createComment.reply.isReply) inputCommentRef.current?.focus();
+  }, [createComment.reply.isReply]);
 
   return (
     <div className=" flex mt-[15px] relative h-fit gap-x-2">
@@ -58,8 +69,8 @@ export default function InputCommentBox() {
             value={commentContent}
             onChange={(e) => setCommentContent(e.target.value)}
             placeholder={
-              replyTarget
-                ? "đang trả lời" + " " + replyTarget.userTargetName
+              createComment.reply.isReply
+                ? "đang trả lời" + " " + createComment.reply.replyToUser
                 : "Viết bình luận với tư cách " +
                   currentUser?.full_name +
                   " ..."
@@ -68,12 +79,15 @@ export default function InputCommentBox() {
             type="text"
           />
           <div className=" absolute right-2 top-1/2 -translate-y-1/2 text-primary-red-color ">
-            {replyTarget && (
+            {createComment.reply.isReply && (
               <button
                 type="button"
                 className=" p-1 rounded-full   bg-primary-red-color text-white "
                 onClick={() => {
-                  setReplyTarget(undefined);
+                  setCreateComment((p) => ({
+                    ...p,
+                    reply: { ...p.reply, isReply: false },
+                  }));
                 }}
               >
                 <IoCloseCircleSharp />
@@ -97,7 +111,6 @@ export default function InputCommentBox() {
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-
             <button className="px-4 py-2  ">
               <IoSend />
             </button>
