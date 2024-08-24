@@ -3,6 +3,7 @@ import { GetCommentsByIdItemtype } from "@/apis/interfaces";
 import { useAsync, useToggle } from "@smojs/react-hooks";
 import { useParams } from "react-router";
 import { getCommentsByImageIdApi } from "@/apis/mediaApi";
+
 interface CreateComment {
   isCreating: boolean;
   reply: {
@@ -24,6 +25,7 @@ interface CommentContextType {
   setPage: React.Dispatch<React.SetStateAction<number>>;
   createComment: CreateComment;
   setCreateComment: React.Dispatch<React.SetStateAction<CreateComment>>;
+  hasMoreComments: boolean;
 }
 
 export const CommentContext = createContext<CommentContextType | undefined>(
@@ -43,6 +45,7 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
     commentToPinId: 0,
   });
   const [page, setPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(true);
   const [commentList, setCommentList] = useState<
     GetCommentsByIdItemtype[] | null
   >(null);
@@ -50,17 +53,17 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchComments = async () => {
     if (!id) return null;
-    return getCommentsByImageIdApi(+id);
+    const response = await getCommentsByImageIdApi(+id, { page });
+    if (response?.data.items.length === 0) setHasMoreComments(false); // Stop if no more comments
+    return response;
   };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data, error, isLoading } = useAsync(fetchComments, [
     id,
     page,
     isReFetch,
   ]);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!data) return;
     setCommentList((prev) => {
@@ -80,6 +83,7 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
         setPage,
         createComment,
         setCreateComment,
+        hasMoreComments,
       }}
     >
       {children}
