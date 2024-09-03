@@ -27,8 +27,8 @@ export default function InputCommentBox() {
         ? createComment.reply.replyToId
         : undefined;
       await createCommentApi(+id, commentContent, replyToId);
-      setCommentContent(""); // Clear comment box
-      toggleReFetch(); // Trigger refetch
+      setCommentContent("");
+      toggleReFetch();
     } catch (error) {
       console.error(error);
     } finally {

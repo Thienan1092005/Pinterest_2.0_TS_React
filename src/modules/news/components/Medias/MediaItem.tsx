@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { getSavedImageApi, savedImageApi } from "@/apis/mediaApi";
 import { selectAuth } from "@/redux/slices/authSlice";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import classNames from "classnames";
 
 interface IProps {
@@ -32,6 +32,7 @@ export default function MediaItem({ mediaData }: IProps) {
   const { image, user, name, slug, id } = mediaData;
   const [imageSaved, setImageSaved] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataFetched, setDataFetched] = useState<boolean>(false);
   const handleFollow = async () => {
     try {
       setIsLoading(true);
@@ -45,21 +46,19 @@ export default function MediaItem({ mediaData }: IProps) {
     }
   };
 
-  useEffect(() => {
-    if (!currentUser || !id) return;
-    const getFollowState = async () => {
-      try {
-        const data = await getSavedImageApi(currentUser.accessToken, +id);
-        if (data.length > 0) setImageSaved(true);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getFollowState();
-  }, [id, currentUser]);
+  const fetchFollowState = useCallback(async () => {
+    if (!currentUser || !id || dataFetched) return;
+    try {
+      const data = await getSavedImageApi(currentUser.accessToken, +id);
+      if (data.length > 0) setImageSaved(true);
+      setDataFetched(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentUser, id, dataFetched]);
 
   return (
-    <div>
+    <div onMouseEnter={fetchFollowState}>
       <div className="relative cursor-zoom-in w-full">
         <Image
           loading="lazy"

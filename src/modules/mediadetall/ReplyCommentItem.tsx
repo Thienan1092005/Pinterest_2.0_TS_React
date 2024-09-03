@@ -40,7 +40,7 @@ export default function ReplyCommentItem({ commentReplyData }: IProps) {
                   ...prev.reply,
                   isReply: true,
                   replyToUser: full_name,
-                  replyToId: usercommentid,
+                  replyToId: commentId,
                 },
               }))
             }

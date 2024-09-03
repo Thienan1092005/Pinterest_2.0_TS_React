@@ -1,16 +1,10 @@
 import { logout, selectAuth } from "@/redux/slices/authSlice";
-import {
-  DropdownItem,
-  DropdownMenu,
-  DropdownSection,
-  Switch,
-} from "@nextui-org/react";
+import { DropdownItem, DropdownMenu, DropdownSection } from "@nextui-org/react";
 import { TbLogout2 } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import AvatarOrName from "./AvatarOrName";
 import { useNavigate } from "react-router";
-import { FaMoon, FaSun } from "react-icons/fa";
 export default function AccoutDropdown() {
   const dispatch = useDispatch();
   const Navigate = useNavigate();
@@ -52,7 +46,7 @@ export default function AccoutDropdown() {
           heading: "font-sf-bold text-[16px]",
         }}
       >
-        <DropdownItem closeOnSelect={false}>
+        {/* <DropdownItem closeOnSelect={false}>
           <Switch
             defaultSelected
             size="lg"
@@ -67,7 +61,7 @@ export default function AccoutDropdown() {
           >
             Dark mode
           </Switch>
-        </DropdownItem>
+        </DropdownItem> */}
         <DropdownItem
           onClick={() => {
             dispatch(logout());

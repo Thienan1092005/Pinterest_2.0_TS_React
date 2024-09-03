@@ -3,7 +3,7 @@ import axios from "axios";
 const baseApi = axios.create({
   baseURL: "https://pinterest.paindev.net/",
   headers: {
-    authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYXV0aF9jb2RlIjoiU01PVGVhbSIsInJvbGUiOjMsImlhdCI6MTcyMjYwNzEyMiwiZXhwIjoxNzI1MTk5MTIyfQ.UCCt-mIPIlCJMT239-0HNwW3uDjeYk7qmVujpfQXS-M`,
+    authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYXV0aF9jb2RlIjoiU01PVGVhbSIsInJvbGUiOjMsImlhdCI6MTcyNTMzMzA3NSwiZXhwIjoxNzI3OTI1MDc1fQ.J3v0OtYFXuvVvpwkUVIW_f_VpquynPrCh5TLE9iJSPQ`,
   },
 });
 baseApi.interceptors.request.use(

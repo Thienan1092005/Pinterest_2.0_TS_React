@@ -22,10 +22,8 @@ interface CommentContextType {
   isLoading: boolean;
   error: Error | null;
   toggleReFetch: (value?: boolean | undefined) => void;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
   createComment: CreateComment;
   setCreateComment: React.Dispatch<React.SetStateAction<CreateComment>>;
-  hasMoreComments: boolean;
 }
 
 export const CommentContext = createContext<CommentContextType | undefined>(
@@ -44,8 +42,6 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
     content: "",
     commentToPinId: 0,
   });
-  const [page, setPage] = useState(1);
-  const [hasMoreComments, setHasMoreComments] = useState(true);
   const [commentList, setCommentList] = useState<
     GetCommentsByIdItemtype[] | null
   >(null);
@@ -53,23 +49,15 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchComments = async () => {
     if (!id) return null;
-    const response = await getCommentsByImageIdApi(+id, { page });
-    if (response?.data.items.length === 0) setHasMoreComments(false); // Stop if no more comments
+    const response = await getCommentsByImageIdApi(+id);
     return response;
   };
 
-  const { data, error, isLoading } = useAsync(fetchComments, [
-    id,
-    page,
-    isReFetch,
-  ]);
+  const { data, error, isLoading } = useAsync(fetchComments, [id, isReFetch]);
 
   useEffect(() => {
     if (!data) return;
-    setCommentList((prev) => {
-      if (!prev) return data?.data.items || null;
-      return [...prev, ...data.data.items];
-    });
+    setCommentList(data?.data.items || null);
   }, [data]);
 
   return (
@@ -80,10 +68,8 @@ const CommentContextProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         error,
         toggleReFetch,
-        setPage,
         createComment,
         setCreateComment,
-        hasMoreComments,
       }}
     >
       {children}

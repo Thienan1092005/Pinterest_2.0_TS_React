@@ -32,8 +32,11 @@ export default function SignedHeader() {
   const renderButtons = [
     {
       component: (
-        <RoundedButton className="hover:bg-pinter-gray text-[24px] bg-white !text-black !rounded-full w-12 h-12">
+        <RoundedButton className="hover:bg-pinter-gray relative text-[24px] bg-white !text-black !rounded-full w-12 h-12">
           <FaBell />
+          <div className=" absolute w-4 h-4 flex items-center justify-center  rounded-full text-white bg-red-500  top-0 text-[10px]  right-0">
+            1
+          </div>
         </RoundedButton>
       ),
     },

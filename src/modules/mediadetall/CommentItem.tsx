@@ -91,7 +91,7 @@ export default function CommentItem({ comment }: IProps) {
               onClick={() =>
                 setCreateComment((prev) => ({
                   ...prev,
-                  isCreating: true,
+                  isCreating: false,
                   reply: {
                     ...prev.reply,
                     isReply: true,
