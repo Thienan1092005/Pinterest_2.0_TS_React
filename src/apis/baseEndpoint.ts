@@ -3,9 +3,24 @@ import axios from "axios";
 const baseApi = axios.create({
   baseURL: "https://pinterest.paindev.net/",
   headers: {
-    authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYXV0aF9jb2RlIjoiU01PVGVhbSIsInJvbGUiOjMsImlhdCI6MTcyNTMzMzA3NSwiZXhwIjoxNzI3OTI1MDc1fQ.J3v0OtYFXuvVvpwkUVIW_f_VpquynPrCh5TLE9iJSPQ`,
+    authorization: `Bearer  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYXV0aF9jb2RlIjoiUGFpbmRldiIsInJvbGUiOjMsImlhdCI6MTcyNTQxOTg5OSwiZXhwIjoxNzI4MDExODk5fQ.ccwlCoJcF3QAgzVkPCmf_CTj4Kes_VxkvaSR-Xw4zts`,
   },
 });
+
+const getNewsAuthorization = async (originalRequest) => {
+  try {
+    const { data } = await axios.get("https://pinterest.paindev.net/");
+    originalRequest.headers[
+      "authorization"
+    ] = `Bearer ${data.authorizationToken}`;
+    baseApi.defaults.headers.common[
+      "authorization"
+    ] = `Bearer ${data.authorizationToken}`;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 baseApi.interceptors.request.use(
   function (request) {
     const currentUser = JSON.parse(
@@ -44,13 +59,16 @@ baseApi.interceptors.response.use(
             }`,
           },
         });
-
+        await getNewsAuthorization(originalRequest);
         localStorage.setItem("currentUser", JSON.stringify(data.data));
+
         baseApi.defaults.headers.common[
           "accessToken"
         ] = ` ${data.data.accessToken}`;
+
         originalRequest.headers["accessToken"] = ` ${data.data.accessToken}`;
 
+        console.log(`Bearer ${newAuthor.authorizationToken}`);
         return baseApi(originalRequest);
       } catch (error) {
         console.log("Refresh token failed", error);
@@ -62,5 +80,4 @@ baseApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 export default baseApi;

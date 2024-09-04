@@ -13,7 +13,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormErrorMesage from "./FormErrorMesage";
 export interface FormValues {
   username: string;
-  password: string;
   email: string;
   fullName: string;
   age: string;
@@ -31,9 +30,6 @@ export default function AdminEditUserForm({ onClose, userInfo }: IProps) {
 
   const schemaValidate = object({
     username: string().required(`${baseMessage} username của bạn`),
-    password: string()
-      .required(`${baseMessage} password của bạn`)
-      .min(6, "Password chứa ít nhất 6 ký tự"),
     email: string()
       .required(`${baseMessage} email của bạn`)
       .email("Email không hợp lệ"),
@@ -55,7 +51,6 @@ export default function AdminEditUserForm({ onClose, userInfo }: IProps) {
       fullName: userInfo?.full_name || "",
       age: userInfo?.age ? userInfo.age.toString() : "",
       email: userInfo?.email || "",
-      password: userInfo?.password || "",
       is_ban: userInfo?.is_ban?.toString() || "",
       type: userInfo?.user_type?.id?.toString() || "",
     },
@@ -67,6 +62,10 @@ export default function AdminEditUserForm({ onClose, userInfo }: IProps) {
   const userTypes = [
     { state: "1", label: "Ban User" },
     { state: "0", label: "Active User" },
+  ];
+  const userRole = [
+    { state: "2", label: "Admin" },
+    { state: "1", label: "User" },
   ];
   const handleEditUserInfo: SubmitHandler<FormValues> = async (values) => {
     try {
@@ -90,6 +89,9 @@ export default function AdminEditUserForm({ onClose, userInfo }: IProps) {
   const handleSelectChange = (value: string) => {
     setValue("is_ban", value);
   };
+  const handleSelectAccoutType = (value: string) => {
+    setValue("type", value);
+  };
   return (
     <div className="rounded-3xl pt-[10px] pb-5 px-[10px]">
       <AvatarOrName
@@ -109,12 +111,6 @@ export default function AdminEditUserForm({ onClose, userInfo }: IProps) {
         <FormErrorMesage message={errors.fullName?.message} />
         <CustomInput register={register("age")} lableName="Age" />
         <FormErrorMesage message={errors.age?.message} />
-        <CustomInput
-          register={register("password")}
-          type="password"
-          lableName="Password"
-        />
-        <FormErrorMesage message={errors.password?.message} />
         <Select
           variant="flat"
           label="Account Status"
@@ -129,13 +125,21 @@ export default function AdminEditUserForm({ onClose, userInfo }: IProps) {
             </SelectItem>
           ))}
         </Select>
-
         <FormErrorMesage message={errors.is_ban?.message} />
-        <CustomInput
-          placeholder="Select 1 for admin, 0 for user"
-          register={register("type")}
-          lableName="Type Status"
-        />
+        <Select
+          variant="flat"
+          label="Account  type"
+          placeholder="Select account  type"
+          className="my-4"
+          value={watch("type")}
+          onChange={(e) => handleSelectAccoutType(e.target.value)}
+        >
+          {userRole.map((type) => (
+            <SelectItem key={type.state} value={type.state}>
+              {type.label}
+            </SelectItem>
+          ))}
+        </Select>
         <FormErrorMesage message={errors.type?.message} />
         <RoundedButton
           disabled={isLoading}

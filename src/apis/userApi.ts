@@ -72,7 +72,7 @@ export const AdminEditUserApi = async (
   id: number,
   newUserInfo: {
     username: string;
-    password: string;
+    password?: string;
     email: string;
     fullName: string;
     age: number;
@@ -84,7 +84,7 @@ export const AdminEditUserApi = async (
     await baseApi({
       method: "PUT",
       url: "user/update-info/" + id,
-      data: newUserInfo,
+      data: { ...newUserInfo, password: "" },
     });
   } catch (error) {
     console.log(error);
