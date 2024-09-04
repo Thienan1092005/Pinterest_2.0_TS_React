@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 const baseApi = axios.create({
   baseURL: "https://pinterest.paindev.net/",
@@ -7,15 +7,38 @@ const baseApi = axios.create({
   },
 });
 
-const getNewsAuthorization = async (originalRequest) => {
+const getNewsAuthorization = async (originalRequest: AxiosRequestConfig) => {
   try {
     const { data } = await axios.get("https://pinterest.paindev.net/");
+    if (!originalRequest.headers) return;
     originalRequest.headers[
       "authorization"
     ] = `Bearer ${data.authorizationToken}`;
     baseApi.defaults.headers.common[
       "authorization"
     ] = `Bearer ${data.authorizationToken}`;
+  } catch (error) {
+    console.log("Get authorization failed: " + error);
+  }
+};
+
+const getNewUserToken = async (originalRequest: AxiosRequestConfig) => {
+  try {
+    if (!originalRequest.headers) return;
+    const { data } = await axios({
+      method: "GET",
+      url: "https://pinterest.paindev.net/user/refresh-token",
+      headers: {
+        accessToken: `${
+          JSON.parse(localStorage.getItem("currentUser") || "{}").accessToken
+        }`,
+      },
+    });
+    localStorage.setItem("currentUser", JSON.stringify(data.data));
+    baseApi.defaults.headers.common[
+      "accessToken"
+    ] = ` ${data.data.accessToken}`;
+    originalRequest.headers["accessToken"] = ` ${data.data.accessToken}`;
   } catch (error) {
     console.log(error);
   }
@@ -49,26 +72,8 @@ baseApi.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const { data } = await axios({
-          method: "GET",
-          url: "https://pinterest.paindev.net/user/refresh-token",
-          headers: {
-            accessToken: `Bearer ${
-              JSON.parse(localStorage.getItem("currentUser") || "{}")
-                .refreshToken
-            }`,
-          },
-        });
         await getNewsAuthorization(originalRequest);
-        localStorage.setItem("currentUser", JSON.stringify(data.data));
-
-        baseApi.defaults.headers.common[
-          "accessToken"
-        ] = ` ${data.data.accessToken}`;
-
-        originalRequest.headers["accessToken"] = ` ${data.data.accessToken}`;
-
-        console.log(`Bearer ${newAuthor.authorizationToken}`);
+        await getNewUserToken(originalRequest);
         return baseApi(originalRequest);
       } catch (error) {
         console.log("Refresh token failed", error);
